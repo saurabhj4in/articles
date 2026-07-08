@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<?xml-stylesheet type="text/xsl" href="https://saurabhj4in.github.io/articles/rss.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Saurabh Jain</title>
-    <link>http://localhost:1313/</link>
+    <link>https://saurabhj4in.github.io/articles/</link>
     <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
     <generator>Hugo</generator>
     <language>en</language>
     <managingEditor>Saurabh Jain</managingEditor>
-    <atom:link href="http://localhost:1313/tags/python/" rel="self" type="application/rss+xml" />
+    <atom:link href="https://saurabhj4in.github.io/articles/tags/python/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Built a Python Tool to Automate Email Security Audits</title>
-      <link>http://localhost:1313/posts/python-tool-email-security-audits/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/python-tool-email-security-audits/</link>
       <pubDate>Mon, 22 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/python-tool-email-security-audits/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/python-tool-email-security-audits/</guid>
       <description>Automating SPF, DKIM, DMARC, and MTA-STS checks with a simple Python script.</description>
     </item>
     

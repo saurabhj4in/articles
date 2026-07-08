@@ -1,100 +1,100 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<?xml-stylesheet type="text/xsl" href="https://saurabhj4in.github.io/articles/rss.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Saurabh Jain</title>
-    <link>http://localhost:1313/</link>
+    <link>https://saurabhj4in.github.io/articles/</link>
     <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
     <generator>Hugo</generator>
     <language>en</language>
     <managingEditor>Saurabh Jain</managingEditor>
-    <atom:link href="http://localhost:1313/tags/security/" rel="self" type="application/rss+xml" />
+    <atom:link href="https://saurabhj4in.github.io/articles/tags/security/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Unauthenticated Access to AWS via Cognito Identity Pool ID</title>
-      <link>http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/cognito-identity-pool-unauthenticated-access/</link>
       <pubDate>Tue, 05 May 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/cognito-identity-pool-unauthenticated-access/</guid>
       <description>How an exposed Cognito Identity Pool ID can hand attackers temporary AWS credentials — no login required.</description>
     </item>
     
     <item>
       <title>The Day Google Stopped Helping Me at Work</title>
-      <link>http://localhost:1313/posts/the-day-google-stopped-helping-me-at-work/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/the-day-google-stopped-helping-me-at-work/</link>
       <pubDate>Fri, 23 Jan 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/the-day-google-stopped-helping-me-at-work/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/the-day-google-stopped-helping-me-at-work/</guid>
       <description>When you get promoted, you stop fixing bugs and start choosing battles. No StackOverflow for that.</description>
     </item>
     
     <item>
       <title>Security Fundamentals for Beginners</title>
-      <link>http://localhost:1313/posts/security-fundamentals-for-beginners/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-fundamentals-for-beginners/</link>
       <pubDate>Thu, 11 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-fundamentals-for-beginners/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-fundamentals-for-beginners/</guid>
       <description>Nine foundational security principles that matter more than any tool or framework.</description>
     </item>
     
     <item>
       <title>Prompting Cheat Sheet for Security Engineers</title>
-      <link>http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/prompting-cheat-sheet-security-engineers/</link>
       <pubDate>Mon, 18 Aug 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/prompting-cheat-sheet-security-engineers/</guid>
       <description>Practical prompting templates for security engineers who want AI to actually be useful.</description>
     </item>
     
     <item>
       <title>The Last Time You&#39;ll Ever Use a Password</title>
-      <link>http://localhost:1313/posts/the-last-time-youll-ever-use-a-password/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/the-last-time-youll-ever-use-a-password/</link>
       <pubDate>Fri, 25 Jul 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/the-last-time-youll-ever-use-a-password/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/the-last-time-youll-ever-use-a-password/</guid>
       <description>Passkeys are here. Here&#39;s what they are, how they work, and why passwords are finally dying.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-6</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-6/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-6/</link>
       <pubDate>Sat, 08 Mar 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-6/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-6/</guid>
       <description>Part 6 of the series covering security engineer interview questions, including AWS IMDSv2 security enhancements and why CORS alone cannot prevent CSRF attacks.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-5</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-5/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-5/</link>
       <pubDate>Wed, 23 Oct 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-5/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-5/</guid>
       <description>Part 5 of the series presents a vulnerable Java code snippet and walks through identifying multiple security flaws including SQL injection, hardcoded credentials, and missing input validation.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-3</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-3/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-3/</link>
       <pubDate>Wed, 09 Oct 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-3/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-3/</guid>
       <description>Part 3 of the series covers AWS network architecture, specifically where to place a Load Balancer and S3 Bucket within public and private subnets for optimal security.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-2</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-2/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-2/</link>
       <pubDate>Fri, 27 Sep 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-2/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-2/</guid>
       <description>Part 2 of the series explains the differences between monolithic and microservice architectures from a security and scalability perspective.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-1</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-1/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-1/</link>
       <pubDate>Tue, 17 Sep 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-1/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-1/</guid>
       <description>Part 1 of a multi-part series sharing real security engineer interview questions from major tech companies, covering the correct sequencing of WAF, IPS, and IDS in a network architecture.</description>
     </item>
     
     <item>
       <title>Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications</title>
-      <link>http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/cors-doesnt-apply-to-mobile-apps/</link>
       <pubDate>Fri, 03 Nov 2023 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/cors-doesnt-apply-to-mobile-apps/</guid>
       <description>CORS is a browser-enforced security mechanism — not a server or OS feature. This article explains why native mobile apps are immune to CORS restrictions and what that means for security testing.</description>
     </item>
     

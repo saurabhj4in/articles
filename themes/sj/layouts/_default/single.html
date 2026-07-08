@@ -18,7 +18,7 @@
       <!-- Header -->
       <header class="post-header">
         {{ with .Params.tags }}
-        <div class="post-tags">{{ range . }}<a class="tag" href="/tags/{{ . | urlize }}">{{ . }}</a>{{ end }}</div>
+        <div class="post-tags">{{ range . }}<a class="tag" href="{{ "/tags/" | relURL }}{{ . | urlize }}">{{ . }}</a>{{ end }}</div>
         {{ end }}
         <h1 class="post-title">{{ .Title }}</h1>
         {{ with .Description }}<p class="post-subtitle">{{ . }}</p>{{ end }}
@@ -56,7 +56,7 @@
       {{ with .Params.tags }}
       <div class="post-tags-footer">
         <span class="tags-label">Topics:</span>
-        {{ range . }}<a class="tag" href="/tags/{{ . | urlize }}">{{ . }}</a>{{ end }}
+        {{ range . }}<a class="tag" href="{{ "/tags/" | relURL }}{{ . | urlize }}">{{ . }}</a>{{ end }}
       </div>
       {{ end }}
 
@@ -82,10 +82,10 @@
         {{ end }}
       </nav>
 
-      <div class="back-link"><a href="/">← All posts</a></div>
+      <div class="back-link"><a href="{{ "/" | relURL }}">← All posts</a></div>
 
     </article>
   </div>
 </div>
-<script src="/js/main.js" defer></script>
+<script src="{{ "js/main.js" | relURL }}" defer></script>
 {{ end }}

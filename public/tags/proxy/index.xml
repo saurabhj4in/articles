@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<?xml-stylesheet type="text/xsl" href="https://saurabhj4in.github.io/articles/rss.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Saurabh Jain</title>
-    <link>http://localhost:1313/</link>
+    <link>https://saurabhj4in.github.io/articles/</link>
     <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
     <generator>Hugo</generator>
     <language>en</language>
     <managingEditor>Saurabh Jain</managingEditor>
-    <atom:link href="http://localhost:1313/tags/proxy/" rel="self" type="application/rss+xml" />
+    <atom:link href="https://saurabhj4in.github.io/articles/tags/proxy/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Resolving Proxy Issue in Genymotion</title>
-      <link>http://localhost:1313/posts/resolving-proxy-issue-genymotion/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/resolving-proxy-issue-genymotion/</link>
       <pubDate>Mon, 26 Aug 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/resolving-proxy-issue-genymotion/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/resolving-proxy-issue-genymotion/</guid>
       <description>A quick guide to working around the broken Advanced Options WiFi proxy configuration in Genymotion 3.7.1 by using ADB commands instead.</description>
     </item>
     

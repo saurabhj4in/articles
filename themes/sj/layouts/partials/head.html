@@ -28,7 +28,7 @@
 {{ with .Params.canonicalURL }}<link rel="canonical" href="{{ . }}">{{ else }}<link rel="canonical" href="{{ .Permalink }}">{{ end }}
 
 <!-- RSS -->
-<link rel="alternate" type="application/rss+xml" href="/index.xml" title="{{ .Site.Title }}">
+<link rel="alternate" type="application/rss+xml" href="{{ "index.xml" | relURL }}" title="{{ .Site.Title }}">
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +36,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
 <!-- Styles -->
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
 
 <!-- Theme (inline to prevent flash) -->
 <script>

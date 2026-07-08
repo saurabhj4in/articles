@@ -1,380 +1,380 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<?xml-stylesheet type="text/xsl" href="https://saurabhj4in.github.io/articles/rss.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Saurabh Jain</title>
-    <link>http://localhost:1313/</link>
+    <link>https://saurabhj4in.github.io/articles/</link>
     <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
     <generator>Hugo</generator>
     <language>en</language>
     <managingEditor>Saurabh Jain</managingEditor>
-    <atom:link href="http://localhost:1313/tags/" rel="self" type="application/rss+xml" />
+    <atom:link href="https://saurabhj4in.github.io/articles/tags/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>AWS</title>
-      <link>http://localhost:1313/tags/aws/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/aws/</link>
       <pubDate>Tue, 05 May 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/aws/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/aws/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Bug-Bounty</title>
-      <link>http://localhost:1313/tags/bug-bounty/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/bug-bounty/</link>
       <pubDate>Tue, 05 May 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/bug-bounty/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/bug-bounty/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Cloud Security</title>
-      <link>http://localhost:1313/tags/cloud-security/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/cloud-security/</link>
       <pubDate>Tue, 05 May 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/cloud-security/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/cloud-security/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Cognito</title>
-      <link>http://localhost:1313/tags/cognito/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/cognito/</link>
       <pubDate>Tue, 05 May 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/cognito/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/cognito/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Security</title>
-      <link>http://localhost:1313/tags/security/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/security/</link>
       <pubDate>Tue, 05 May 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/security/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/security/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Career</title>
-      <link>http://localhost:1313/tags/career/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/career/</link>
       <pubDate>Fri, 23 Jan 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/career/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/career/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Growth</title>
-      <link>http://localhost:1313/tags/growth/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/growth/</link>
       <pubDate>Fri, 23 Jan 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/growth/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/growth/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Leadership</title>
-      <link>http://localhost:1313/tags/leadership/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/leadership/</link>
       <pubDate>Fri, 23 Jan 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/leadership/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/leadership/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Recon</title>
-      <link>http://localhost:1313/tags/recon/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/recon/</link>
       <pubDate>Tue, 18 Nov 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/recon/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/recon/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Security Testing</title>
-      <link>http://localhost:1313/tags/security-testing/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/security-testing/</link>
       <pubDate>Tue, 18 Nov 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/security-testing/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/security-testing/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Web Security</title>
-      <link>http://localhost:1313/tags/web-security/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/web-security/</link>
       <pubDate>Tue, 18 Nov 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/web-security/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/web-security/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Automation</title>
-      <link>http://localhost:1313/tags/automation/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/automation/</link>
       <pubDate>Mon, 22 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/automation/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/automation/</guid>
       <description></description>
     </item>
     
     <item>
       <title>DNS</title>
-      <link>http://localhost:1313/tags/dns/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/dns/</link>
       <pubDate>Mon, 22 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/dns/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/dns/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Email Security</title>
-      <link>http://localhost:1313/tags/email-security/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/email-security/</link>
       <pubDate>Mon, 22 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/email-security/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/email-security/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Python</title>
-      <link>http://localhost:1313/tags/python/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/python/</link>
       <pubDate>Mon, 22 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/python/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/python/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tools</title>
-      <link>http://localhost:1313/tags/tools/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/tools/</link>
       <pubDate>Mon, 22 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/tools/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/tools/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Beginners</title>
-      <link>http://localhost:1313/tags/beginners/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/beginners/</link>
       <pubDate>Thu, 11 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/beginners/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/beginners/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Fundamentals</title>
-      <link>http://localhost:1313/tags/fundamentals/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/fundamentals/</link>
       <pubDate>Thu, 11 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/fundamentals/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/fundamentals/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Learning</title>
-      <link>http://localhost:1313/tags/learning/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/learning/</link>
       <pubDate>Thu, 11 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/learning/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/learning/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Responsible Disclosure</title>
-      <link>http://localhost:1313/tags/responsible-disclosure/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/responsible-disclosure/</link>
       <pubDate>Mon, 01 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/responsible-disclosure/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/responsible-disclosure/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Security Research</title>
-      <link>http://localhost:1313/tags/security-research/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/security-research/</link>
       <pubDate>Mon, 01 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/security-research/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/security-research/</guid>
       <description></description>
     </item>
     
     <item>
       <title>AI</title>
-      <link>http://localhost:1313/tags/ai/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/ai/</link>
       <pubDate>Mon, 18 Aug 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/ai/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/ai/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Productivity</title>
-      <link>http://localhost:1313/tags/productivity/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/productivity/</link>
       <pubDate>Mon, 18 Aug 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/productivity/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/productivity/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Prompt Engineering</title>
-      <link>http://localhost:1313/tags/prompt-engineering/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/prompt-engineering/</link>
       <pubDate>Mon, 18 Aug 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/prompt-engineering/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/prompt-engineering/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Communication</title>
-      <link>http://localhost:1313/tags/communication/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/communication/</link>
       <pubDate>Wed, 13 Aug 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/communication/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/communication/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Authentication</title>
-      <link>http://localhost:1313/tags/authentication/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/authentication/</link>
       <pubDate>Fri, 25 Jul 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/authentication/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/authentication/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Identity</title>
-      <link>http://localhost:1313/tags/identity/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/identity/</link>
       <pubDate>Fri, 25 Jul 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/identity/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/identity/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Passkeys</title>
-      <link>http://localhost:1313/tags/passkeys/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/passkeys/</link>
       <pubDate>Fri, 25 Jul 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/passkeys/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/passkeys/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Certification</title>
-      <link>http://localhost:1313/tags/certification/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/certification/</link>
       <pubDate>Thu, 10 Jul 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/certification/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/certification/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Cloud</title>
-      <link>http://localhost:1313/tags/cloud/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/cloud/</link>
       <pubDate>Thu, 10 Jul 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/cloud/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/cloud/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Interview</title>
-      <link>http://localhost:1313/tags/interview/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/interview/</link>
       <pubDate>Sat, 08 Mar 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/interview/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/interview/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hacking</title>
-      <link>http://localhost:1313/tags/hacking/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/hacking/</link>
       <pubDate>Mon, 28 Oct 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/hacking/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/hacking/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Osint</title>
-      <link>http://localhost:1313/tags/osint/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/osint/</link>
       <pubDate>Mon, 28 Oct 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/osint/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/osint/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tryhackme</title>
-      <link>http://localhost:1313/tags/tryhackme/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/tryhackme/</link>
       <pubDate>Mon, 28 Oct 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/tryhackme/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/tryhackme/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Code-Review</title>
-      <link>http://localhost:1313/tags/code-review/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/code-review/</link>
       <pubDate>Wed, 23 Oct 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/code-review/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/code-review/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Architecture</title>
-      <link>http://localhost:1313/tags/architecture/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/architecture/</link>
       <pubDate>Fri, 27 Sep 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/architecture/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/architecture/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Networking</title>
-      <link>http://localhost:1313/tags/networking/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/networking/</link>
       <pubDate>Tue, 17 Sep 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/networking/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/networking/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Android</title>
-      <link>http://localhost:1313/tags/android/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/android/</link>
       <pubDate>Mon, 26 Aug 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/android/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/android/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mobile-Security</title>
-      <link>http://localhost:1313/tags/mobile-security/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/mobile-security/</link>
       <pubDate>Mon, 26 Aug 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/mobile-security/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/mobile-security/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Proxy</title>
-      <link>http://localhost:1313/tags/proxy/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/proxy/</link>
       <pubDate>Mon, 26 Aug 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/proxy/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/proxy/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Cors</title>
-      <link>http://localhost:1313/tags/cors/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/cors/</link>
       <pubDate>Fri, 03 Nov 2023 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/cors/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/cors/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Privilege-Escalation</title>
-      <link>http://localhost:1313/tags/privilege-escalation/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/privilege-escalation/</link>
       <pubDate>Sun, 09 Jan 2022 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/privilege-escalation/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/privilege-escalation/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Ctf</title>
-      <link>http://localhost:1313/tags/ctf/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/ctf/</link>
       <pubDate>Sun, 21 Nov 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/ctf/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/ctf/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hackthebox</title>
-      <link>http://localhost:1313/tags/hackthebox/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/hackthebox/</link>
       <pubDate>Sun, 21 Nov 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/hackthebox/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/hackthebox/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Xxe</title>
-      <link>http://localhost:1313/tags/xxe/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/xxe/</link>
       <pubDate>Sun, 21 Nov 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/xxe/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/xxe/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Reverse-Engineering</title>
-      <link>http://localhost:1313/tags/reverse-engineering/</link>
+      <link>https://saurabhj4in.github.io/articles/tags/reverse-engineering/</link>
       <pubDate>Wed, 09 Jun 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/tags/reverse-engineering/</guid>
+      <guid>https://saurabhj4in.github.io/articles/tags/reverse-engineering/</guid>
       <description></description>
     </item>
     

@@ -1,252 +1,252 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<?xml-stylesheet type="text/xsl" href="https://saurabhj4in.github.io/articles/rss.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Saurabh Jain</title>
-    <link>http://localhost:1313/</link>
+    <link>https://saurabhj4in.github.io/articles/</link>
     <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
     <generator>Hugo</generator>
     <language>en</language>
     <managingEditor>Saurabh Jain</managingEditor>
-    <atom:link href="http://localhost:1313/posts/" rel="self" type="application/rss+xml" />
+    <atom:link href="https://saurabhj4in.github.io/articles/posts/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Unauthenticated Access to AWS via Cognito Identity Pool ID</title>
-      <link>http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/cognito-identity-pool-unauthenticated-access/</link>
       <pubDate>Tue, 05 May 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/cognito-identity-pool-unauthenticated-access/</guid>
       <description>How an exposed Cognito Identity Pool ID can hand attackers temporary AWS credentials — no login required.</description>
     </item>
     
     <item>
       <title>The Day Google Stopped Helping Me at Work</title>
-      <link>http://localhost:1313/posts/the-day-google-stopped-helping-me-at-work/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/the-day-google-stopped-helping-me-at-work/</link>
       <pubDate>Fri, 23 Jan 2026 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/the-day-google-stopped-helping-me-at-work/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/the-day-google-stopped-helping-me-at-work/</guid>
       <description>When you get promoted, you stop fixing bugs and start choosing battles. No StackOverflow for that.</description>
     </item>
     
     <item>
       <title>20&#43; Vulnerabilities in a Static Website</title>
-      <link>http://localhost:1313/posts/20-vulnerabilities-in-a-static-website/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/20-vulnerabilities-in-a-static-website/</link>
       <pubDate>Tue, 18 Nov 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/20-vulnerabilities-in-a-static-website/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/20-vulnerabilities-in-a-static-website/</guid>
       <description>No database, no backend, no APIs — still 20+ findings. Here&#39;s the bug bounty cheat sheet for static sites.</description>
     </item>
     
     <item>
       <title>Built a Python Tool to Automate Email Security Audits</title>
-      <link>http://localhost:1313/posts/python-tool-email-security-audits/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/python-tool-email-security-audits/</link>
       <pubDate>Mon, 22 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/python-tool-email-security-audits/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/python-tool-email-security-audits/</guid>
       <description>Automating SPF, DKIM, DMARC, and MTA-STS checks with a simple Python script.</description>
     </item>
     
     <item>
       <title>Security Fundamentals for Beginners</title>
-      <link>http://localhost:1313/posts/security-fundamentals-for-beginners/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-fundamentals-for-beginners/</link>
       <pubDate>Thu, 11 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-fundamentals-for-beginners/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-fundamentals-for-beginners/</guid>
       <description>Nine foundational security principles that matter more than any tool or framework.</description>
     </item>
     
     <item>
       <title>Recon to Responsible Disclosure</title>
-      <link>http://localhost:1313/posts/recon-to-responsible-disclosure/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/recon-to-responsible-disclosure/</link>
       <pubDate>Mon, 01 Sep 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/recon-to-responsible-disclosure/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/recon-to-responsible-disclosure/</guid>
       <description>From rejected duplicates and out-of-scope reports to a methodical recon process that actually works.</description>
     </item>
     
     <item>
       <title>Prompting Cheat Sheet for Security Engineers</title>
-      <link>http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/prompting-cheat-sheet-security-engineers/</link>
       <pubDate>Mon, 18 Aug 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/prompting-cheat-sheet-security-engineers/</guid>
       <description>Practical prompting templates for security engineers who want AI to actually be useful.</description>
     </item>
     
     <item>
       <title>How to Be a Good Prompter</title>
-      <link>http://localhost:1313/posts/how-to-be-a-good-prompter/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/how-to-be-a-good-prompter/</link>
       <pubDate>Wed, 13 Aug 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/how-to-be-a-good-prompter/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/how-to-be-a-good-prompter/</guid>
       <description>Unlocking clarity, creativity, and better outputs from AI through one simple rule: the more you tell, the better you get.</description>
     </item>
     
     <item>
       <title>The Last Time You&#39;ll Ever Use a Password</title>
-      <link>http://localhost:1313/posts/the-last-time-youll-ever-use-a-password/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/the-last-time-youll-ever-use-a-password/</link>
       <pubDate>Fri, 25 Jul 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/the-last-time-youll-ever-use-a-password/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/the-last-time-youll-ever-use-a-password/</guid>
       <description>Passkeys are here. Here&#39;s what they are, how they work, and why passwords are finally dying.</description>
     </item>
     
     <item>
       <title>Cracked AWS Cloud Practitioner in 2 Weeks</title>
-      <link>http://localhost:1313/posts/cracked-aws-cloud-practitioner-in-2-weeks/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/cracked-aws-cloud-practitioner-in-2-weeks/</link>
       <pubDate>Thu, 10 Jul 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/cracked-aws-cloud-practitioner-in-2-weeks/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/cracked-aws-cloud-practitioner-in-2-weeks/</guid>
       <description>How I passed AWS Certified Cloud Practitioner (CLF-C02) in two weeks with prior hands-on experience and a focused study plan.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-6</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-6/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-6/</link>
       <pubDate>Sat, 08 Mar 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-6/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-6/</guid>
       <description>Part 6 of the series covering security engineer interview questions, including AWS IMDSv2 security enhancements and why CORS alone cannot prevent CSRF attacks.</description>
     </item>
     
     <item>
       <title>OhSINT TryHackMe Walkthrough</title>
-      <link>http://localhost:1313/posts/ohsint-tryhackme-walkthrough/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/ohsint-tryhackme-walkthrough/</link>
       <pubDate>Mon, 28 Oct 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/ohsint-tryhackme-walkthrough/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/ohsint-tryhackme-walkthrough/</guid>
       <description>A walkthrough of the OhSINT room on TryHackMe, demonstrating how to extract EXIF metadata from an image file and use OSINT techniques to answer challenge questions.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-5</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-5/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-5/</link>
       <pubDate>Wed, 23 Oct 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-5/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-5/</guid>
       <description>Part 5 of the series presents a vulnerable Java code snippet and walks through identifying multiple security flaws including SQL injection, hardcoded credentials, and missing input validation.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-3</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-3/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-3/</link>
       <pubDate>Wed, 09 Oct 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-3/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-3/</guid>
       <description>Part 3 of the series covers AWS network architecture, specifically where to place a Load Balancer and S3 Bucket within public and private subnets for optimal security.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-2</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-2/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-2/</link>
       <pubDate>Fri, 27 Sep 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-2/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-2/</guid>
       <description>Part 2 of the series explains the differences between monolithic and microservice architectures from a security and scalability perspective.</description>
     </item>
     
     <item>
       <title>Security Engineer Interview Questions Part-1</title>
-      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-1/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-1/</link>
       <pubDate>Tue, 17 Sep 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-1/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/security-engineer-interview-questions-part-1/</guid>
       <description>Part 1 of a multi-part series sharing real security engineer interview questions from major tech companies, covering the correct sequencing of WAF, IPS, and IDS in a network architecture.</description>
     </item>
     
     <item>
       <title>Resolving Proxy Issue in Genymotion</title>
-      <link>http://localhost:1313/posts/resolving-proxy-issue-genymotion/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/resolving-proxy-issue-genymotion/</link>
       <pubDate>Mon, 26 Aug 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/resolving-proxy-issue-genymotion/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/resolving-proxy-issue-genymotion/</guid>
       <description>A quick guide to working around the broken Advanced Options WiFi proxy configuration in Genymotion 3.7.1 by using ADB commands instead.</description>
     </item>
     
     <item>
       <title>Integrating Shodan and Censys API Keys into Subfinder</title>
-      <link>http://localhost:1313/posts/shodan-censys-subfinder-integration/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/shodan-censys-subfinder-integration/</link>
       <pubDate>Fri, 23 Aug 2024 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/shodan-censys-subfinder-integration/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/shodan-censys-subfinder-integration/</guid>
       <description>A step-by-step guide to enhancing Subfinder with Shodan, Censys, and SecurityTrails API keys to dramatically increase subdomain discovery coverage during recon.</description>
     </item>
     
     <item>
       <title>Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications</title>
-      <link>http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/cors-doesnt-apply-to-mobile-apps/</link>
       <pubDate>Fri, 03 Nov 2023 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/cors-doesnt-apply-to-mobile-apps/</guid>
       <description>CORS is a browser-enforced security mechanism — not a server or OS feature. This article explains why native mobile apps are immune to CORS restrictions and what that means for security testing.</description>
     </item>
     
     <item>
       <title>AgentSudo Write-Up: TryHackMe Machine Walk-through</title>
-      <link>http://localhost:1313/posts/agentsudo-tryhackme-walkthrough/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/agentsudo-tryhackme-walkthrough/</link>
       <pubDate>Sun, 09 Jan 2022 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/agentsudo-tryhackme-walkthrough/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/agentsudo-tryhackme-walkthrough/</guid>
       <description>A walkthrough of the AgentSudo machine on TryHackMe, a Linux box requiring exploitation of information disclosure vulnerabilities and a sudo authentication bypass (CVE-2019-14287) for privilege escalation.</description>
     </item>
     
     <item>
       <title>BountyHunter Walkthrough: HackTheBox Writeup</title>
-      <link>http://localhost:1313/posts/bountyhunter-hackthebox-walkthrough/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/bountyhunter-hackthebox-walkthrough/</link>
       <pubDate>Sun, 21 Nov 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/bountyhunter-hackthebox-walkthrough/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/bountyhunter-hackthebox-walkthrough/</guid>
       <description>BountyHunter is a beginner Linux machine on HackTheBox. This walkthrough covers nmap recon, exploiting an XXE vulnerability in a bug report form to read local files, and privilege escalation via a Python sudo script.</description>
     </item>
     
     <item>
       <title>TomGhost Write-Up: TryHackMe Walk-through</title>
-      <link>http://localhost:1313/posts/tomghost-tryhackme-walkthrough/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/tomghost-tryhackme-walkthrough/</link>
       <pubDate>Tue, 09 Nov 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/tomghost-tryhackme-walkthrough/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/tomghost-tryhackme-walkthrough/</guid>
       <description>A walkthrough of the TomGhost easy Linux machine on TryHackMe, exploiting Apache Tomcat via the Apache JServ Protocol (AJP) Ghostcat vulnerability (CVE-2020-1938).</description>
     </item>
     
     <item>
       <title>Cap Walk-through: HackTheBox Machine Write-up</title>
-      <link>http://localhost:1313/posts/cap-hackthebox-walkthrough/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/cap-hackthebox-walkthrough/</link>
       <pubDate>Tue, 19 Oct 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/cap-hackthebox-walkthrough/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/cap-hackthebox-walkthrough/</guid>
       <description>Cap is a beginner Linux machine on HackTheBox. This walkthrough covers nmap recon, discovering a PCAP download vulnerability exposing FTP credentials, and privilege escalation via Linux capabilities.</description>
     </item>
     
     <item>
       <title>BackDoor 1: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</title>
-      <link>http://localhost:1313/posts/backdoor-1-netsquare-ctf/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/backdoor-1-netsquare-ctf/</link>
       <pubDate>Wed, 09 Jun 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/backdoor-1-netsquare-ctf/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/backdoor-1-netsquare-ctf/</guid>
       <description>Walkthrough of the BackDoor 1 mobile CTF challenge from NET-SQUARE — extracting hidden credentials from an Android APK using static reverse engineering tools.</description>
     </item>
     
     <item>
       <title>BackDoor 2: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</title>
-      <link>http://localhost:1313/posts/backdoor-2-netsquare-ctf/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/backdoor-2-netsquare-ctf/</link>
       <pubDate>Wed, 09 Jun 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/backdoor-2-netsquare-ctf/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/backdoor-2-netsquare-ctf/</guid>
       <description>Walkthrough of BackDoor 2 from NET-SQUARE&#39;s CTF series — credentials are encoded rather than plaintext, requiring a deeper static analysis to locate and decode them.</description>
     </item>
     
     <item>
       <title>BackDoor 3: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</title>
-      <link>http://localhost:1313/posts/backdoor-3-netsquare-ctf/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/backdoor-3-netsquare-ctf/</link>
       <pubDate>Wed, 09 Jun 2021 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/backdoor-3-netsquare-ctf/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/backdoor-3-netsquare-ctf/</guid>
       <description>Walkthrough of BackDoor 3 — the most complex challenge in NET-SQUARE&#39;s series, requiring multi-step extraction combining static analysis, runtime instrumentation, and potentially native library inspection.</description>
     </item>
     
     <item>
       <title>Morty Sherlocked: Android Application CTF Challenge Walkthrough</title>
-      <link>http://localhost:1313/posts/morty-sherlocked-android-ctf/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/morty-sherlocked-android-ctf/</link>
       <pubDate>Sun, 27 Sep 2020 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/morty-sherlocked-android-ctf/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/morty-sherlocked-android-ctf/</guid>
       <description>A beginner-level Android CTF challenge walkthrough covering APK analysis, reverse engineering, and common mobile security vulnerabilities.</description>
     </item>
     
     <item>
       <title>Morty&#39;s New Tool: Android Application CTF Challenge Walkthrough</title>
-      <link>http://localhost:1313/posts/mortys-new-tool-android-ctf/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/mortys-new-tool-android-ctf/</link>
       <pubDate>Sun, 27 Sep 2020 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/mortys-new-tool-android-ctf/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/mortys-new-tool-android-ctf/</guid>
       <description>An intermediate Android CTF challenge involving dynamic code transformation at runtime, native library reverse engineering, and Frida instrumentation to intercept a hidden flag.</description>
     </item>
     
     <item>
       <title>Planet X: Android Application CTF Challenge Walkthrough</title>
-      <link>http://localhost:1313/posts/planet-x-android-ctf/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/planet-x-android-ctf/</link>
       <pubDate>Sun, 27 Sep 2020 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/planet-x-android-ctf/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/planet-x-android-ctf/</guid>
       <description>Walkthrough of the Planet X Android CTF challenge — a beginner-friendly challenge teaching foundational mobile application security assessment techniques.</description>
     </item>
     
     <item>
       <title>Universe Weird C132: Android Application CTF Challenge Walkthrough</title>
-      <link>http://localhost:1313/posts/universe-weird-c132-android-ctf/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/universe-weird-c132-android-ctf/</link>
       <pubDate>Sun, 27 Sep 2020 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/universe-weird-c132-android-ctf/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/universe-weird-c132-android-ctf/</guid>
       <description>Walkthrough of the Universe Weird C132 Android CTF challenge, covering reverse engineering techniques and common mobile application security flaws.</description>
     </item>
     

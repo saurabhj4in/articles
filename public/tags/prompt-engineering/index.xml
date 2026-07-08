@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<?xml-stylesheet type="text/xsl" href="https://saurabhj4in.github.io/articles/rss.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Saurabh Jain</title>
-    <link>http://localhost:1313/</link>
+    <link>https://saurabhj4in.github.io/articles/</link>
     <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
     <generator>Hugo</generator>
     <language>en</language>
     <managingEditor>Saurabh Jain</managingEditor>
-    <atom:link href="http://localhost:1313/tags/prompt-engineering/" rel="self" type="application/rss+xml" />
+    <atom:link href="https://saurabhj4in.github.io/articles/tags/prompt-engineering/" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Prompting Cheat Sheet for Security Engineers</title>
-      <link>http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/prompting-cheat-sheet-security-engineers/</link>
       <pubDate>Mon, 18 Aug 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/prompting-cheat-sheet-security-engineers/</guid>
       <description>Practical prompting templates for security engineers who want AI to actually be useful.</description>
     </item>
     
     <item>
       <title>How to Be a Good Prompter</title>
-      <link>http://localhost:1313/posts/how-to-be-a-good-prompter/</link>
+      <link>https://saurabhj4in.github.io/articles/posts/how-to-be-a-good-prompter/</link>
       <pubDate>Wed, 13 Aug 2025 00:00:00 &#43;0000</pubDate>
-      <guid>http://localhost:1313/posts/how-to-be-a-good-prompter/</guid>
+      <guid>https://saurabhj4in.github.io/articles/posts/how-to-be-a-good-prompter/</guid>
       <description>Unlocking clarity, creativity, and better outputs from AI through one simple rule: the more you tell, the better you get.</description>
     </item>
     
