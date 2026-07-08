@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Walkthrough of the Planet X Android CTF challenge — a beginner-friendly challenge teaching foundational mobile application security assessment techniques.">
+<meta name="author" content="Saurabh Jain">
+<title>Planet X: Android Application CTF Challenge Walkthrough · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Planet X: Android Application CTF Challenge Walkthrough">
+<meta property="og:description" content="Walkthrough of the Planet X Android CTF challenge — a beginner-friendly challenge teaching foundational mobile application security assessment techniques.">
+<meta property="og:url"         content="http://localhost:1313/posts/planet-x-android-ctf/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/max/326/0*flK6JdG83nNWaUfb">
+<meta name="twitter:image"      content="https://miro.medium.com/max/326/0*flK6JdG83nNWaUfb">
+
+
+<meta property="article:published_time" content="2020-09-27T00:00:00Z">
+<meta property="article:tag" content="android"><meta property="article:tag" content="ctf"><meta property="article:tag" content="mobile-security">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Planet X: Android Application CTF Challenge Walkthrough">
+<meta name="twitter:description" content="Walkthrough of the Planet X Android CTF challenge — a beginner-friendly challenge teaching foundational mobile application security assessment techniques.">
+
+
+<link rel="canonical" href="https://medium.com/@saurabh_jain_/planet-x-android-application-based-ctf-challenge-walkthrough-778547aac015">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#phase-1-static-analysis">Phase 1: Static Analysis</a>
+      <ul>
+        <li><a href="#decompile-the-apk">Decompile the APK</a></li>
+        <li><a href="#review-androidmanifestxml">Review AndroidManifest.xml</a></li>
+        <li><a href="#examine-source-code-in-jadx-gui">Examine Source Code in jadx-gui</a></li>
+      </ul>
+    </li>
+    <li><a href="#phase-2-dynamic-analysis">Phase 2: Dynamic Analysis</a>
+      <ul>
+        <li><a href="#log-monitoring">Log Monitoring</a></li>
+        <li><a href="#network-traffic">Network Traffic</a></li>
+        <li><a href="#file-system-inspection">File System Inspection</a></li>
+      </ul>
+    </li>
+    <li><a href="#phase-3-component-exploitation">Phase 3: Component Exploitation</a>
+      <ul>
+        <li><a href="#exported-activity-bypass">Exported Activity Bypass</a></li>
+        <li><a href="#deep-link--intent-injection">Deep Link / Intent Injection</a></li>
+      </ul>
+    </li>
+    <li><a href="#key-security-takeaways">Key Security Takeaways</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/android">android</a><a class="tag" href="/tags/ctf">ctf</a><a class="tag" href="/tags/mobile-security">mobile-security</a></div>
+        
+        <h1 class="post-title">Planet X: Android Application CTF Challenge Walkthrough</h1>
+        <p class="post-subtitle">Walkthrough of the Planet X Android CTF challenge — a beginner-friendly challenge teaching foundational mobile application security assessment techniques.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>September 27, 2020</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://medium.com/@saurabh_jain_/planet-x-android-application-based-ctf-challenge-walkthrough-778547aac015" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/max/326/0*flK6JdG83nNWaUfb" alt="Planet X: Android Application CTF Challenge Walkthrough" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://medium.com/@saurabh_jain_/planet-x-android-application-based-ctf-challenge-walkthrough-778547aac015" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><p>Planet X is a beginner-level Android application CTF challenge covering basic flaws discovered during mobile application security assessments. It&rsquo;s part of a series of challenges designed to build practical skills in Android reverse engineering.</p>
+<h2 id="tools">Tools</h2>
+<ul>
+<li><strong>adb</strong> — Android Debug Bridge for device communication</li>
+<li><strong>apktool</strong> — Decompiles APK to smali code and resources</li>
+<li><strong>jadx-gui</strong> — Converts APK to readable Java source</li>
+<li>Android emulator or physical device</li>
+</ul>
+<h2 id="getting-started">Getting Started</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Connect to emulator/device</span>
+</span></span><span class="line"><span class="cl">adb devices
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Install the challenge APK</span>
+</span></span><span class="line"><span class="cl">adb install planet_x.apk
+</span></span></code></pre></div><h2 id="phase-1-static-analysis">Phase 1: Static Analysis</h2>
+<p>Static analysis means examining the app without running it — looking at the code and resources to find vulnerabilities.</p>
+<h3 id="decompile-the-apk">Decompile the APK</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">apktool d planet_x.apk -o planetx_out
+</span></span></code></pre></div><h3 id="review-androidmanifestxml">Review AndroidManifest.xml</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat planetx_out/AndroidManifest.xml
+</span></span></code></pre></div><p>What to flag:</p>
+<ul>
+<li><code>android:exported=&quot;true&quot;</code> on activities/services/receivers</li>
+<li><code>android:debuggable=&quot;true&quot;</code> (allows adb debug access)</li>
+<li><code>android:allowBackup=&quot;true&quot;</code> (allows adb backup of app data)</li>
+<li>Custom permissions vs no permissions</li>
+</ul>
+<h3 id="examine-source-code-in-jadx-gui">Examine Source Code in jadx-gui</h3>
+<p>Load the APK in jadx-gui and scan through:</p>
+<ul>
+<li><code>MainActivity</code> — entry point logic</li>
+<li>Any class with &ldquo;auth&rdquo;, &ldquo;login&rdquo;, &ldquo;secret&rdquo;, &ldquo;key&rdquo; in the name</li>
+<li>String constants and resource files</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Quick grep for interesting strings in smali</span>
+</span></span><span class="line"><span class="cl">grep -ri <span class="s2">&#34;flag\|password\|secret\|api_key&#34;</span> planetx_out/smali/
+</span></span></code></pre></div><h2 id="phase-2-dynamic-analysis">Phase 2: Dynamic Analysis</h2>
+<p>Run the app and observe its behaviour at runtime.</p>
+<h3 id="log-monitoring">Log Monitoring</h3>
+<p>Many apps accidentally log sensitive data:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">adb logcat <span class="p">|</span> grep -i <span class="s2">&#34;planet\|key\|flag\|secret\|password&#34;</span>
+</span></span></code></pre></div><h3 id="network-traffic">Network Traffic</h3>
+<p>Route emulator traffic through Burp Suite to intercept API calls. Look for:</p>
+<ul>
+<li>Authentication tokens sent in plaintext</li>
+<li>Sensitive data in request/response bodies</li>
+<li>Missing certificate validation (allows MITM)</li>
+</ul>
+<h3 id="file-system-inspection">File System Inspection</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Access app private files (requires debug build or rooted device)</span>
+</span></span><span class="line"><span class="cl">adb shell run-as com.planet.x
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Check shared prefs</span>
+</span></span><span class="line"><span class="cl">cat /data/data/com.planet.x/shared_prefs/*.xml
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Check databases</span>
+</span></span><span class="line"><span class="cl">sqlite3 /data/data/com.planet.x/databases/planetx.db <span class="s2">&#34;.dump&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Check files directory</span>
+</span></span><span class="line"><span class="cl">ls -la /data/data/com.planet.x/files/
+</span></span></code></pre></div><h2 id="phase-3-component-exploitation">Phase 3: Component Exploitation</h2>
+<h3 id="exported-activity-bypass">Exported Activity Bypass</h3>
+<p>If the app has exported activities that skip authentication:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Launch hidden/admin activity directly</span>
+</span></span><span class="line"><span class="cl">adb shell am start -n com.planet.x/.AdminActivity
+</span></span><span class="line"><span class="cl">adb shell am start -n com.planet.x/.FlagActivity
+</span></span></code></pre></div><h3 id="deep-link--intent-injection">Deep Link / Intent Injection</h3>
+<p>Some apps handle deep links that trigger privileged actions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">adb shell am start -a android.intent.action.VIEW <span class="se">\
+</span></span></span><span class="line"><span class="cl">  -d <span class="s2">&#34;planetx://secret?code=admin&#34;</span>
+</span></span></code></pre></div><h2 id="key-security-takeaways">Key Security Takeaways</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Vulnerability</th>
+					<th>Impact</th>
+					<th>Fix</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Hardcoded secrets</td>
+					<td>Full compromise</td>
+					<td>Use server-side secrets, runtime key fetch</td>
+			</tr>
+			<tr>
+					<td>Exported activities</td>
+					<td>Auth bypass</td>
+					<td>Add <code>android:exported=&quot;false&quot;</code> + permission checks</td>
+			</tr>
+			<tr>
+					<td>Cleartext logging</td>
+					<td>Data leakage</td>
+					<td>Remove logs in release builds (<code>ProGuard</code>)</td>
+			</tr>
+			<tr>
+					<td>Unencrypted local storage</td>
+					<td>Data theft on rooted device</td>
+					<td>Use Android Keystore + EncryptedSharedPreferences</td>
+			</tr>
+			<tr>
+					<td>Missing cert pinning</td>
+					<td>MITM</td>
+					<td>Implement network security config with cert pins</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<p><em>Part of an Android security CTF series. A great hands-on introduction to mobile application security assessment.</em></p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/android">android</a><a class="tag" href="/tags/ctf">ctf</a><a class="tag" href="/tags/mobile-security">mobile-security</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/morty-sherlocked-android-ctf/">
+      
+      <img class="related-img" src="https://miro.medium.com/max/315/0*i7VdsGMh6eSHra7P" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">Morty Sherlocked: Android Application CTF Challenge Walkthrough</h3>
+        <span class="related-meta">Sep 27, 2020 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/universe-weird-c132-android-ctf/">
+      
+      <div class="related-img-placeholder"></div>
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">Universe Weird C132: Android Application CTF Challenge Walkthrough</h3>
+        <span class="related-meta">Sep 27, 2020 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/resolving-proxy-issue-genymotion/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*mRpZ9KNkI3ZSZi_VMomC8A.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">Resolving Proxy Issue in Genymotion</h3>
+        <span class="related-meta">Aug 26, 2024 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/universe-weird-c132-android-ctf/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Universe Weird C132: Android Application CTF Challenge Walkthrough</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/mortys-new-tool-android-ctf/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Morty&#39;s New Tool: Android Application CTF Challenge Walkthrough</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

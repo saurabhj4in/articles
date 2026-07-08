@@ -1,0 +1,15 @@
+{{ define "main" }}
+<div class="container">
+  <section class="search-hero">
+    <h1 class="search-heading">Search</h1>
+    <div class="search-box">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="search-input" class="search-input" type="search" placeholder="Search articles, topics, tools…" autocomplete="off" spellcheck="false">
+    </div>
+    <p id="search-counter" class="search-counter"></p>
+  </section>
+  <section id="search-results" class="search-results"></section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+<script src="/js/search.js"></script>
+{{ end }}

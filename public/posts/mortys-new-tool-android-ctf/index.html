@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="An intermediate Android CTF challenge involving dynamic code transformation at runtime, native library reverse engineering, and Frida instrumentation to intercept a hidden flag.">
+<meta name="author" content="Saurabh Jain">
+<title>Morty&#39;s New Tool: Android Application CTF Challenge Walkthrough · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Morty&#39;s New Tool: Android Application CTF Challenge Walkthrough">
+<meta property="og:description" content="An intermediate Android CTF challenge involving dynamic code transformation at runtime, native library reverse engineering, and Frida instrumentation to intercept a hidden flag.">
+<meta property="og:url"         content="http://localhost:1313/posts/mortys-new-tool-android-ctf/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/max/370/0*RLVBXPPQQBhF5VjI">
+<meta name="twitter:image"      content="https://miro.medium.com/max/370/0*RLVBXPPQQBhF5VjI">
+
+
+<meta property="article:published_time" content="2020-09-27T00:00:00Z">
+<meta property="article:tag" content="android"><meta property="article:tag" content="ctf"><meta property="article:tag" content="reverse-engineering">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Morty&#39;s New Tool: Android Application CTF Challenge Walkthrough">
+<meta name="twitter:description" content="An intermediate Android CTF challenge involving dynamic code transformation at runtime, native library reverse engineering, and Frida instrumentation to intercept a hidden flag.">
+
+
+<link rel="canonical" href="https://medium.com/bugbountywriteup/mortys-new-tool-android-application-based-ctf-challenge-walkthrough-6058e080598e">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#tools-required">Tools Required</a></li>
+    <li><a href="#setup">Setup</a></li>
+    <li><a href="#initial-analysis">Initial Analysis</a></li>
+    <li><a href="#static-analysis-with-jadx-gui">Static Analysis with jadx-gui</a></li>
+    <li><a href="#reverse-engineering-the-native-library">Reverse Engineering the Native Library</a></li>
+    <li><a href="#dynamic-instrumentation-with-frida">Dynamic Instrumentation with Frida</a></li>
+    <li><a href="#key-takeaways">Key Takeaways</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/android">android</a><a class="tag" href="/tags/ctf">ctf</a><a class="tag" href="/tags/reverse-engineering">reverse-engineering</a></div>
+        
+        <h1 class="post-title">Morty&#39;s New Tool: Android Application CTF Challenge Walkthrough</h1>
+        <p class="post-subtitle">An intermediate Android CTF challenge involving dynamic code transformation at runtime, native library reverse engineering, and Frida instrumentation to intercept a hidden flag.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>September 27, 2020</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://medium.com/bugbountywriteup/mortys-new-tool-android-application-based-ctf-challenge-walkthrough-6058e080598e" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/max/370/0*RLVBXPPQQBhF5VjI" alt="Morty&#39;s New Tool: Android Application CTF Challenge Walkthrough" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://medium.com/bugbountywriteup/mortys-new-tool-android-application-based-ctf-challenge-walkthrough-6058e080598e" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><p>Morty&rsquo;s New Tool is an intermediate level Android application CTF challenge. The goal is to learn dynamic code transformation at runtime, reverse engineering of native libraries, and real-time interception using Frida. It simulates real-world app data flow analysis scenarios.</p>
+<h2 id="tools-required">Tools Required</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Tool</th>
+					<th>Purpose</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>adb</strong></td>
+					<td>Communicate with device/emulator</td>
+			</tr>
+			<tr>
+					<td><strong>apktool</strong></td>
+					<td>Reverse engineer Android APK</td>
+			</tr>
+			<tr>
+					<td><strong>jadx-gui</strong></td>
+					<td>Produce Java source from APK/Dex</td>
+			</tr>
+			<tr>
+					<td><strong>Android Studio</strong></td>
+					<td>IDE + emulator</td>
+			</tr>
+			<tr>
+					<td><strong>Ghidra</strong></td>
+					<td>Open source reverse engineering (native libs)</td>
+			</tr>
+			<tr>
+					<td><strong>Frida</strong></td>
+					<td>Dynamic code instrumentation toolkit</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="setup">Setup</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Check device connectivity</span>
+</span></span><span class="line"><span class="cl">adb devices
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Install the APK</span>
+</span></span><span class="line"><span class="cl">adb install mortynewtool.apk
+</span></span></code></pre></div><h2 id="initial-analysis">Initial Analysis</h2>
+<p>Running the app shows a single &ldquo;LOGIN&rdquo; button. On click, it sends a request and displays:</p>
+<pre tabindex="0"><code>Request Sent: { &#34;algo&#34;: &#34;SHA256&#34;, &#34;challenge&#34;: &#34;lab3&#34;, &#34;flag&#34;: &lt;value&gt; }
+</code></pre><p>Two key observations:</p>
+<ol>
+<li>The hashing algorithm is SHA-256</li>
+<li>The flag value is computed at runtime — it&rsquo;s not stored in plaintext</li>
+</ol>
+<p>Breaking SHA-256 directly is infeasible (~2¹²⁸ operations). We need another approach.</p>
+<h2 id="static-analysis-with-jadx-gui">Static Analysis with jadx-gui</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">jadx-gui mortynewtool.apk
+</span></span></code></pre></div><p>Examining <code>MainActivity.java</code> reveals the source is <strong>obfuscated</strong>. A JSON object <code>f1004a</code> is constructed with two hardcoded parameters — but the flag value is generated dynamically, likely inside a native library (<code>.so</code> file).</p>
+<h2 id="reverse-engineering-the-native-library">Reverse Engineering the Native Library</h2>
+<p>Extract the APK as a ZIP and locate <code>.so</code> files in <code>lib/</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">unzip mortynewtool.apk -d morty_out
+</span></span><span class="line"><span class="cl">ls morty_out/lib/
+</span></span></code></pre></div><p>Open the <code>.so</code> file in <strong>Ghidra</strong> to analyse the native function responsible for generating the flag. Identify the function name from the JNI bridge in the decompiled Java.</p>
+<h2 id="dynamic-instrumentation-with-frida">Dynamic Instrumentation with Frida</h2>
+<p>Since the flag is computed at runtime, use Frida to hook the native function and intercept the return value:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Install frida-server on device</span>
+</span></span><span class="line"><span class="cl">adb push frida-server /data/local/tmp/
+</span></span><span class="line"><span class="cl">adb shell chmod <span class="m">755</span> /data/local/tmp/frida-server
+</span></span><span class="line"><span class="cl">adb shell /data/local/tmp/frida-server <span class="p">&amp;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Hook the native function</span>
+</span></span><span class="line"><span class="cl">frida -U -n com.morty.newtool -l hook.js
+</span></span></code></pre></div><p>Example Frida hook script:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">Interceptor</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="nx">Module</span><span class="p">.</span><span class="nx">findExportByName</span><span class="p">(</span><span class="s2">&#34;libmorty.so&#34;</span><span class="p">,</span> <span class="s2">&#34;generateFlag&#34;</span><span class="p">),</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">onLeave</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">retval</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Flag: &#34;</span> <span class="o">+</span> <span class="nx">Memory</span><span class="p">.</span><span class="nx">readUtf8String</span><span class="p">(</span><span class="nx">retval</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></div><h2 id="key-takeaways">Key Takeaways</h2>
+<ol>
+<li><strong>Obfuscation != Security</strong> — jadx-gui can decompile obfuscated code; logic is still reversible</li>
+<li><strong>Native libraries are reversible</strong> — Ghidra handles ARM/x86 <code>.so</code> files well</li>
+<li><strong>Frida is essential for dynamic analysis</strong> — intercept values computed at runtime that never touch Java land</li>
+<li><strong>Runtime values can&rsquo;t hide in SHA-256 outputs</strong> — you intercept <em>before</em> hashing, not after</li>
+</ol>
+<hr>
+<p><em>CTF challenge by NET-SQUARE / Cybergym. Intermediate difficulty. Requires Frida setup.</em></p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/android">android</a><a class="tag" href="/tags/ctf">ctf</a><a class="tag" href="/tags/reverse-engineering">reverse-engineering</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/backdoor-1-netsquare-ctf/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:660/1*qMud2KYa809O8CPsOY-Fpg.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">BackDoor 1: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</h3>
+        <span class="related-meta">Jun 9, 2021 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/backdoor-2-netsquare-ctf/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:660/1*qMud2KYa809O8CPsOY-Fpg.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">BackDoor 2: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</h3>
+        <span class="related-meta">Jun 9, 2021 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/backdoor-3-netsquare-ctf/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:660/1*qMud2KYa809O8CPsOY-Fpg.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">BackDoor 3: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</h3>
+        <span class="related-meta">Jun 9, 2021 · 3 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/planet-x-android-ctf/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Planet X: Android Application CTF Challenge Walkthrough</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/morty-sherlocked-android-ctf/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Morty Sherlocked: Android Application CTF Challenge Walkthrough</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

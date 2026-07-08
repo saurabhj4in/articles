@@ -1,0 +1,127 @@
+{{ define "main" }}
+{{ $posts    := where .Site.RegularPages "Type" "posts" }}
+{{ $featured := index (where $posts ".Params.featured" true) 0 }}
+{{ if not $featured }}{{ $featured = index $posts 0 }}{{ end }}
+{{ $pager    := .Paginate $posts }}
+
+<div class="container">
+
+  <!-- ── Featured hero (first page only) ── -->
+  {{ if eq $pager.PageNumber 1 }}
+  {{ with $featured }}
+  <section class="featured-section">
+    <a class="featured-card" href="{{ .Permalink }}">
+      <div class="featured-image-wrap">
+        {{ with .Params.cover }}<img src="{{ . }}" alt="{{ $featured.Title }}" loading="eager">{{ end }}
+        <div class="featured-overlay"></div>
+        <span class="featured-label">Featured</span>
+      </div>
+      <div class="featured-body">
+        <div class="featured-meta">
+          {{ with .Params.tags }}<span class="tag">{{ index . 0 }}</span>{{ end }}
+          <time>{{ .Date.Format "January 2, 2006" }}</time>
+          <span>{{ .ReadingTime }} min read</span>
+        </div>
+        <h2 class="featured-title">{{ .Title }}</h2>
+        {{ with .Description }}<p class="featured-desc">{{ . }}</p>{{ end }}
+        <span class="featured-cta">Read article →</span>
+      </div>
+    </a>
+  </section>
+  {{ end }}
+
+  <!-- ── Filter pills ── -->
+  {{ $allTags := slice }}
+  {{ range $posts }}
+    {{ with .Params.tags }}{{ $allTags = $allTags | append (index . 0) }}{{ end }}
+  {{ end }}
+  <div class="filter-bar">
+    <button class="filter-pill active" data-filter="all">All</button>
+    {{ range $allTags | uniq }}
+    <button class="filter-pill" data-filter="{{ . | urlize }}">{{ . }}</button>
+    {{ end }}
+  </div>
+  {{ end }}
+
+  <!-- ── Card grid ── -->
+  <section class="card-grid" id="card-grid">
+    {{ range $pager.Pages }}
+    {{ $tag := "" }}{{ with .Params.tags }}{{ $tag = index . 0 | urlize }}{{ end }}
+    <article class="card" data-tag="{{ $tag }}">
+      <a class="card-image-link" href="{{ .Permalink }}">
+        {{ with .Params.cover }}
+        <img class="card-image" src="{{ . }}" alt="" loading="lazy">
+        {{ else }}
+        <div class="card-image-placeholder"></div>
+        {{ end }}
+        {{ with .Params.tags }}<span class="card-badge">{{ index . 0 }}</span>{{ end }}
+      </a>
+      <div class="card-body">
+        <h2 class="card-title"><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+        {{ with .Description }}<p class="card-desc">{{ . }}</p>{{ end }}
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-date">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M1 6h14M5 1v2M11 1v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              {{ .Date.Format "Jan 2, 2006" }}
+            </span>
+            <span class="card-read">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              {{ .ReadingTime }} min
+            </span>
+          </div>
+          <a class="card-link" href="{{ .Permalink }}">Read
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+    {{ end }}
+  </section>
+
+  <!-- ── Pagination ── -->
+  {{ template "pagination" $pager }}
+
+</div>
+{{ end }}
+
+{{ define "pagination" }}
+{{ $p := . }}
+{{ if gt $p.TotalPages 1 }}
+<nav class="pagination">
+  {{ if $p.HasPrev }}
+  <a class="pag-btn" href="{{ $p.Prev.URL }}">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Previous
+  </a>
+  {{ else }}
+  <span class="pag-btn disabled">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Previous
+  </span>
+  {{ end }}
+
+  <div class="pag-pages">
+    {{ range $p.Pagers }}
+    {{ if eq . $p }}
+    <span class="pag-page active">{{ .PageNumber }}</span>
+    {{ else }}
+    <a class="pag-page" href="{{ .URL }}">{{ .PageNumber }}</a>
+    {{ end }}
+    {{ end }}
+  </div>
+
+  {{ if $p.HasNext }}
+  <a class="pag-btn" href="{{ $p.Next.URL }}">
+    Next
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+  {{ else }}
+  <span class="pag-btn disabled">
+    Next
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  {{ end }}
+</nav>
+{{ end }}
+{{ end }}

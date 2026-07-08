@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Saurabh Jain</title>
+    <link>http://localhost:1313/</link>
+    <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <managingEditor>Saurabh Jain</managingEditor>
+    <atom:link href="http://localhost:1313/tags/cors/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications</title>
+      <link>http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/</link>
+      <pubDate>Fri, 03 Nov 2023 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/</guid>
+      <description>CORS is a browser-enforced security mechanism — not a server or OS feature. This article explains why native mobile apps are immune to CORS restrictions and what that means for security testing.</description>
+    </item>
+    
+  </channel>
+</rss>

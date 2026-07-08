@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Unlocking clarity, creativity, and better outputs from AI through one simple rule: the more you tell, the better you get.">
+<meta name="author" content="Saurabh Jain">
+<title>How to Be a Good Prompter · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="How to Be a Good Prompter">
+<meta property="og:description" content="Unlocking clarity, creativity, and better outputs from AI through one simple rule: the more you tell, the better you get.">
+<meta property="og:url"         content="http://localhost:1313/posts/how-to-be-a-good-prompter/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:1200/1*CSjVtRsSn4greernm7D9vA.jpeg">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:1200/1*CSjVtRsSn4greernm7D9vA.jpeg">
+
+
+<meta property="article:published_time" content="2025-08-13T00:00:00Z">
+<meta property="article:tag" content="AI"><meta property="article:tag" content="Productivity"><meta property="article:tag" content="Communication"><meta property="article:tag" content="Prompt Engineering">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="How to Be a Good Prompter">
+<meta name="twitter:description" content="Unlocking clarity, creativity, and better outputs from AI through one simple rule: the more you tell, the better you get.">
+
+
+<link rel="canonical" href="https://medium.com/readers-club/how-to-be-a-good-promoter-3314e1c6169f">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-core-rule">The Core Rule</a></li>
+    <li><a href="#the-subway-analogy">The Subway Analogy</a></li>
+    <li><a href="#the-three-things-every-good-prompt-has">The Three Things Every Good Prompt Has</a>
+      <ul>
+        <li><a href="#1-context">1. Context</a></li>
+        <li><a href="#2-format">2. Format</a></li>
+        <li><a href="#3-constraints">3. Constraints</a></li>
+      </ul>
+    </li>
+    <li><a href="#common-prompting-mistakes">Common Prompting Mistakes</a></li>
+    <li><a href="#a-template-to-start-with">A Template to Start With</a></li>
+    <li><a href="#the-mindset-shift">The Mindset Shift</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/ai">AI</a><a class="tag" href="/tags/productivity">Productivity</a><a class="tag" href="/tags/communication">Communication</a><a class="tag" href="/tags/prompt-engineering">Prompt Engineering</a></div>
+        
+        <h1 class="post-title">How to Be a Good Prompter</h1>
+        <p class="post-subtitle">Unlocking clarity, creativity, and better outputs from AI through one simple rule: the more you tell, the better you get.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>August 13, 2025</time>
+              <span class="dot">·</span>
+              <span>3 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://medium.com/readers-club/how-to-be-a-good-promoter-3314e1c6169f" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:1200/1*CSjVtRsSn4greernm7D9vA.jpeg" alt="How to Be a Good Prompter" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://medium.com/readers-club/how-to-be-a-good-promoter-3314e1c6169f" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><blockquote>
+<p>This article was originally published on <a href="https://medium.com/readers-club/how-to-be-a-good-promoter-3314e1c6169f">Medium</a>. Read the full version there.</p>
+</blockquote>
+<p>It&rsquo;s nearly midnight before a deadline. You open ChatGPT, type &ldquo;write an email to my boss,&rdquo; and hit enter.</p>
+<p>What comes back is a masterpiece of corporate formality — sophisticated vocabulary, elaborate structure, tone of a Victorian diplomat. You spend 40 minutes stripping it down to something you&rsquo;d actually send.</p>
+<p>That&rsquo;s not an AI problem. That&rsquo;s a prompting problem.</p>
+<h2 id="the-core-rule">The Core Rule</h2>
+<p><strong>The more you tell, the better you get.</strong></p>
+<p>Prompt engineering isn&rsquo;t an art or a talent. It&rsquo;s closer to mathematics: input quality determines output quality. Vague in, vague out. Specific in, useful out.</p>
+<h2 id="the-subway-analogy">The Subway Analogy</h2>
+<p>If you walk into a Subway and say &ldquo;make me something,&rdquo; you might get a random combination that&rsquo;s technically food but not what you wanted.</p>
+<p>If you say &ldquo;toasted Italian bread, double cheese, turkey, no olives, extra southwest sauce&rdquo; — you get exactly what you wanted.</p>
+<p>AI works the same way. It wants to help. It just needs to know what &ldquo;help&rdquo; looks like to you.</p>
+<h2 id="the-three-things-every-good-prompt-has">The Three Things Every Good Prompt Has</h2>
+<h3 id="1-context">1. Context</h3>
+<p>Who are you? What are you working on? What&rsquo;s the situation?</p>
+<p><strong>Weak:</strong> &ldquo;Write an email to my boss.&rdquo;<br>
+<strong>Strong:</strong> &ldquo;Write an email to my manager explaining that the security audit will take two more days than planned. Tone: professional but direct. I want to reassure them without over-promising.&rdquo;</p>
+<h3 id="2-format">2. Format</h3>
+<p>What do you want back? A paragraph? A list? A table? Code? A first draft you&rsquo;ll edit?</p>
+<p><strong>Weak:</strong> &ldquo;Explain zero trust.&rdquo;<br>
+<strong>Strong:</strong> &ldquo;Explain zero trust in 3 bullet points suitable for a slide deck aimed at a non-technical executive audience.&rdquo;</p>
+<h3 id="3-constraints">3. Constraints</h3>
+<p>What are the boundaries? Length, tone, things to avoid, things to include?</p>
+<p><strong>Weak:</strong> &ldquo;Give me some security tips.&rdquo;<br>
+<strong>Strong:</strong> &ldquo;Give me 5 practical security tips for a 10-person startup. No enterprise tools, no expensive solutions. Each tip in one sentence with a specific action.&rdquo;</p>
+<h2 id="common-prompting-mistakes">Common Prompting Mistakes</h2>
+<p><strong>Treating AI like a search engine.</strong> Single keywords return generic results. AI works better with full sentences and context.</p>
+<p><strong>Asking for too much at once.</strong> &ldquo;Write a complete security policy, incident response plan, and employee training curriculum&rdquo; is too much in one go. Break it into steps.</p>
+<p><strong>Not iterating.</strong> The first response is rarely the best. Follow up: &ldquo;Make it shorter,&rdquo; &ldquo;Change the tone to be more casual,&rdquo; &ldquo;Add a section on X,&rdquo; &ldquo;Remove the jargon.&rdquo;</p>
+<p><strong>Forgetting to specify the audience.</strong> The same concept explained for a developer vs. a CEO vs. a journalist should read completely differently. Tell the AI who it&rsquo;s talking to.</p>
+<h2 id="a-template-to-start-with">A Template to Start With</h2>
+<pre tabindex="0"><code>Role: [Who you are / what role you want the AI to play]
+Task: [What you want done, specifically]
+Audience: [Who will read or use this]
+Format: [What the output should look like]
+Constraints: [Length, tone, what to include/exclude]
+Context: [Any background the AI needs]
+</code></pre><p>You don&rsquo;t need all six every time. But the more you fill in, the less work you&rsquo;ll do cleaning up the output.</p>
+<h2 id="the-mindset-shift">The Mindset Shift</h2>
+<p>Stop thinking of prompts as commands and start thinking of them as briefs.</p>
+<p>You wouldn&rsquo;t hand a new colleague a one-line task and expect them to read your mind. You&rsquo;d explain the context, the goal, the audience, and what done looks like.</p>
+<p>AI is the same. Brief it properly, and it becomes genuinely useful. Brief it poorly, and you&rsquo;ll spend more time editing than you would have spent just writing it yourself.</p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/ai">AI</a><a class="tag" href="/tags/productivity">Productivity</a><a class="tag" href="/tags/communication">Communication</a><a class="tag" href="/tags/prompt-engineering">Prompt Engineering</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*BbypzEZUlcOgPdyhBlfbaQ.jpeg" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AI</span>
+        <h3 class="related-card-title">Prompting Cheat Sheet for Security Engineers</h3>
+        <span class="related-meta">Aug 18, 2025 · 3 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/the-last-time-youll-ever-use-a-password/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">The Last Time You&#39;ll Ever Use a Password</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Prompting Cheat Sheet for Security Engineers</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

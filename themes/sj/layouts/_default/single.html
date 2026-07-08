@@ -1,0 +1,91 @@
+{{ define "main" }}
+<div class="container">
+  <div class="post-layout{{ if .TableOfContents }} has-toc{{ end }}">
+
+    <!-- ── TOC sidebar ── -->
+    {{ if .TableOfContents }}
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav">{{ .TableOfContents }}</nav>
+      </div>
+    </aside>
+    {{ end }}
+
+    <!-- ── Article ── -->
+    <article class="post-content">
+
+      <!-- Header -->
+      <header class="post-header">
+        {{ with .Params.tags }}
+        <div class="post-tags">{{ range . }}<a class="tag" href="/tags/{{ . | urlize }}">{{ . }}</a>{{ end }}</div>
+        {{ end }}
+        <h1 class="post-title">{{ .Title }}</h1>
+        {{ with .Description }}<p class="post-subtitle">{{ . }}</p>{{ end }}
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>{{ .Date.Format "January 2, 2006" }}</time>
+              <span class="dot">·</span>
+              <span>{{ .ReadingTime }} min read</span>
+              {{ with .Params.canonicalURL }}
+              <span class="dot">·</span>
+              <a href="{{ . }}" target="_blank" rel="noopener">View on Medium ↗</a>
+              {{ end }}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Cover image -->
+      {{ with .Params.cover }}
+      <img class="post-cover-img" src="{{ . }}" alt="{{ $.Title }}" loading="eager">
+      {{ end }}
+
+      <!-- Medium origin banner -->
+      {{ partial "medium-banner.html" . }}
+
+      <!-- Body -->
+      <div class="post-body">{{ .Content }}</div>
+
+      <hr class="post-divider">
+
+      <!-- Tags footer -->
+      {{ with .Params.tags }}
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        {{ range . }}<a class="tag" href="/tags/{{ . | urlize }}">{{ . }}</a>{{ end }}
+      </div>
+      {{ end }}
+
+      <!-- Related posts -->
+      {{ partial "related-posts.html" . }}
+
+      <!-- Comments -->
+      {{ partial "comments.html" . }}
+
+      <!-- Prev / Next -->
+      <nav class="post-nav">
+        {{ with .PrevInSection }}
+        <a class="post-nav-link prev" href="{{ .Permalink }}">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">{{ .Title }}</span>
+        </a>
+        {{ end }}
+        {{ with .NextInSection }}
+        <a class="post-nav-link next" href="{{ .Permalink }}">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">{{ .Title }}</span>
+        </a>
+        {{ end }}
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+{{ end }}

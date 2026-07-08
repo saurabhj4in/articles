@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Saurabh Jain</title>
+    <link>http://localhost:1313/</link>
+    <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <managingEditor>Saurabh Jain</managingEditor>
+    <atom:link href="http://localhost:1313/tags/hackthebox/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>BountyHunter Walkthrough: HackTheBox Writeup</title>
+      <link>http://localhost:1313/posts/bountyhunter-hackthebox-walkthrough/</link>
+      <pubDate>Sun, 21 Nov 2021 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/bountyhunter-hackthebox-walkthrough/</guid>
+      <description>BountyHunter is a beginner Linux machine on HackTheBox. This walkthrough covers nmap recon, exploiting an XXE vulnerability in a bug report form to read local files, and privilege escalation via a Python sudo script.</description>
+    </item>
+    
+    <item>
+      <title>Cap Walk-through: HackTheBox Machine Write-up</title>
+      <link>http://localhost:1313/posts/cap-hackthebox-walkthrough/</link>
+      <pubDate>Tue, 19 Oct 2021 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/cap-hackthebox-walkthrough/</guid>
+      <description>Cap is a beginner Linux machine on HackTheBox. This walkthrough covers nmap recon, discovering a PCAP download vulnerability exposing FTP credentials, and privilege escalation via Linux capabilities.</description>
+    </item>
+    
+  </channel>
+</rss>

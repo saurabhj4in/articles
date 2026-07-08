@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A walkthrough of the OhSINT room on TryHackMe, demonstrating how to extract EXIF metadata from an image file and use OSINT techniques to answer challenge questions.">
+<meta name="author" content="Saurabh Jain">
+<title>OhSINT TryHackMe Walkthrough · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="OhSINT TryHackMe Walkthrough">
+<meta property="og:description" content="A walkthrough of the OhSINT room on TryHackMe, demonstrating how to extract EXIF metadata from an image file and use OSINT techniques to answer challenge questions.">
+<meta property="og:url"         content="http://localhost:1313/posts/ohsint-tryhackme-walkthrough/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/da:true/resize:fit:1200/0*ifPp3aIaS92zqJZF">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/da:true/resize:fit:1200/0*ifPp3aIaS92zqJZF">
+
+
+<meta property="article:published_time" content="2024-10-28T00:00:00Z">
+<meta property="article:tag" content="tryhackme"><meta property="article:tag" content="osint"><meta property="article:tag" content="hacking">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="OhSINT TryHackMe Walkthrough">
+<meta name="twitter:description" content="A walkthrough of the OhSINT room on TryHackMe, demonstrating how to extract EXIF metadata from an image file and use OSINT techniques to answer challenge questions.">
+
+
+<link rel="canonical" href="https://saurabh-jain.medium.com/ohsint-tryhackme-walkthrough-251dc6096f66">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-osint">What is OSINT?</a></li>
+    <li><a href="#tools-required">Tools Required</a></li>
+    <li><a href="#methodology">Methodology</a>
+      <ul>
+        <li><a href="#step-1-download-the-challenge-image">Step 1: Download the Challenge Image</a></li>
+        <li><a href="#step-2-extract-metadata-with-exiftool">Step 2: Extract Metadata with exiftool</a></li>
+        <li><a href="#step-3-osint-research">Step 3: OSINT Research</a></li>
+      </ul>
+    </li>
+    <li><a href="#challenge-questions--answers">Challenge Questions &amp; Answers</a></li>
+    <li><a href="#key-lessons">Key Lessons</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/tryhackme">tryhackme</a><a class="tag" href="/tags/osint">osint</a><a class="tag" href="/tags/hacking">hacking</a></div>
+        
+        <h1 class="post-title">OhSINT TryHackMe Walkthrough</h1>
+        <p class="post-subtitle">A walkthrough of the OhSINT room on TryHackMe, demonstrating how to extract EXIF metadata from an image file and use OSINT techniques to answer challenge questions.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>October 28, 2024</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://saurabh-jain.medium.com/ohsint-tryhackme-walkthrough-251dc6096f66" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/da:true/resize:fit:1200/0*ifPp3aIaS92zqJZF" alt="OhSINT TryHackMe Walkthrough" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://saurabh-jain.medium.com/ohsint-tryhackme-walkthrough-251dc6096f66" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><blockquote>
+<p>&ldquo;What information can you possibly get with just one image file?&rdquo;</p>
+</blockquote>
+<p>This challenge explores OSINT techniques through image analysis. The challenge was updated on February 1, 2024, and the file is available on the AttackBox under <code>/Rooms/OhSINT</code> directory.</p>
+<h2 id="what-is-osint">What is OSINT?</h2>
+<p>Open Source Intelligence (OSINT) is the practice of collecting and analysing information from publicly available sources — social media, search engines, image metadata, DNS records, and more. It&rsquo;s a core skill for both offensive (recon) and defensive (threat intel) security work.</p>
+<h2 id="tools-required">Tools Required</h2>
+<ul>
+<li><strong>exiftool</strong> — extracts metadata from images, documents, and media files</li>
+<li><strong>Google / search engines</strong> — for correlation of discovered data</li>
+<li>A browser and curiosity</li>
+</ul>
+<h2 id="methodology">Methodology</h2>
+<h3 id="step-1-download-the-challenge-image">Step 1: Download the Challenge Image</h3>
+<p>The challenge provides a single image file. Download it via the AttackBox or wget.</p>
+<h3 id="step-2-extract-metadata-with-exiftool">Step 2: Extract Metadata with exiftool</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">exiftool WindowsXP.jpg
+</span></span></code></pre></div><p>This dumps all EXIF metadata embedded in the image. Look for fields like:</p>
+<ul>
+<li><code>GPS Latitude</code> / <code>GPS Longitude</code> — reveals physical location</li>
+<li><code>Copyright</code> — may contain a username</li>
+<li><code>Camera Model</code>, <code>Software</code> — can fingerprint the creator</li>
+</ul>
+<h3 id="step-3-osint-research">Step 3: OSINT Research</h3>
+<p>Take the discovered values (usernames, GPS coordinates, etc.) and pivot:</p>
+<ul>
+<li>Search the username across social platforms (Twitter/X, GitHub, WordPress)</li>
+<li>Paste GPS coordinates into Google Maps to identify the city</li>
+<li>Look for any associated accounts or email addresses</li>
+</ul>
+<h2 id="challenge-questions--answers">Challenge Questions &amp; Answers</h2>
+<p><strong>Q1: What is this user&rsquo;s avatar of?</strong></p>
+<p>Using the copyright field extracted from exiftool and searching the username online leads you to a social media profile — the avatar shows a <strong>cat</strong>.</p>
+<p><strong>Q2: What city is this person in?</strong></p>
+<p>The GPS coordinates extracted from the image, when entered into Google Maps, point to a specific city.</p>
+<p><strong>Q3: What is the SSID of the WAP he connected to?</strong></p>
+<p>Using the location and the username, searching on Wigle.net (a wireless network mapping service) reveals nearby access points associated with the user.</p>
+<h2 id="key-lessons">Key Lessons</h2>
+<ol>
+<li><strong>Images carry more data than pixels</strong> — EXIF metadata can expose GPS location, device info, and timestamps</li>
+<li><strong>Usernames are pivots</strong> — a single username found in metadata can unlock an entire online footprint</li>
+<li><strong>Public data compounds</strong> — individually harmless data points combine to reveal sensitive information</li>
+</ol>
+<p>Always strip metadata from images before posting publicly. Tools like <code>exiftool -all= filename.jpg</code> remove embedded data.</p>
+<hr>
+<p><em>TryHackMe room: <a href="https://tryhackme.com/room/ohsint">OhSINT</a></em></p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/tryhackme">tryhackme</a><a class="tag" href="/tags/osint">osint</a><a class="tag" href="/tags/hacking">hacking</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/agentsudo-tryhackme-walkthrough/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:828/1*ZwI1k9l-zpRWnvBoK4UIqA.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">tryhackme</span>
+        <h3 class="related-card-title">AgentSudo Write-Up: TryHackMe Machine Walk-through</h3>
+        <span class="related-meta">Jan 9, 2022 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/tomghost-tryhackme-walkthrough/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1088/1*x5yscQ9QnXBayb5_F3uFMw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">tryhackme</span>
+        <h3 class="related-card-title">TomGhost Write-Up: TryHackMe Walk-through</h3>
+        <span class="related-meta">Nov 9, 2021 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/security-engineer-interview-questions-part-5/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Security Engineer Interview Questions Part-5</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/security-engineer-interview-questions-part-6/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Security Engineer Interview Questions Part-6</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

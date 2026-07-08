@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A quick guide to working around the broken Advanced Options WiFi proxy configuration in Genymotion 3.7.1 by using ADB commands instead.">
+<meta name="author" content="Saurabh Jain">
+<title>Resolving Proxy Issue in Genymotion · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Resolving Proxy Issue in Genymotion">
+<meta property="og:description" content="A quick guide to working around the broken Advanced Options WiFi proxy configuration in Genymotion 3.7.1 by using ADB commands instead.">
+<meta property="og:url"         content="http://localhost:1313/posts/resolving-proxy-issue-genymotion/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:1200/1*mRpZ9KNkI3ZSZi_VMomC8A.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:1200/1*mRpZ9KNkI3ZSZi_VMomC8A.png">
+
+
+<meta property="article:published_time" content="2024-08-26T00:00:00Z">
+<meta property="article:tag" content="android"><meta property="article:tag" content="mobile-security"><meta property="article:tag" content="proxy">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Resolving Proxy Issue in Genymotion">
+<meta name="twitter:description" content="A quick guide to working around the broken Advanced Options WiFi proxy configuration in Genymotion 3.7.1 by using ADB commands instead.">
+
+
+<link rel="canonical" href="https://saurabh-jain.medium.com/resolving-proxy-issue-in-genymotion-87e487a80c80">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-standard-process-now-broken">The Standard Process (Now Broken)</a></li>
+    <li><a href="#the-problem">The Problem</a></li>
+    <li><a href="#the-fix-adb-commands">The Fix: ADB Commands</a>
+      <ul>
+        <li><a href="#set-the-proxy">Set the proxy</a></li>
+        <li><a href="#verify-the-proxy-is-set">Verify the proxy is set</a></li>
+        <li><a href="#remove-the-proxy-when-done">Remove the proxy when done</a></li>
+      </ul>
+    </li>
+    <li><a href="#installing-burps-ca-certificate">Installing Burp&rsquo;s CA Certificate</a></li>
+    <li><a href="#quick-reference">Quick Reference</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/android">android</a><a class="tag" href="/tags/mobile-security">mobile-security</a><a class="tag" href="/tags/proxy">proxy</a></div>
+        
+        <h1 class="post-title">Resolving Proxy Issue in Genymotion</h1>
+        <p class="post-subtitle">A quick guide to working around the broken Advanced Options WiFi proxy configuration in Genymotion 3.7.1 by using ADB commands instead.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>August 26, 2024</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://saurabh-jain.medium.com/resolving-proxy-issue-in-genymotion-87e487a80c80" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:1200/1*mRpZ9KNkI3ZSZi_VMomC8A.png" alt="Resolving Proxy Issue in Genymotion" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://saurabh-jain.medium.com/resolving-proxy-issue-in-genymotion-87e487a80c80" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><p>With the recent update in Genymotion 3.7.1, many users have encountered an issue configuring proxy for capturing mobile traffic through Burp Suite or similar intercepting proxies.</p>
+<h2 id="the-standard-process-now-broken">The Standard Process (Now Broken)</h2>
+<p>The usual way to set a proxy in Android emulators:</p>
+<ol>
+<li>Go to <strong>Settings → Network &amp; Internet</strong></li>
+<li>Select <strong>WiFi</strong></li>
+<li>Long press on the WiFi name → <strong>Modify Network</strong></li>
+<li>Expand <strong>Advanced Options</strong></li>
+<li>Set <strong>Proxy</strong> to Manual and enter host/port</li>
+</ol>
+<h2 id="the-problem">The Problem</h2>
+<p>After the Genymotion 3.7.1 update, long pressing the WiFi button only shows three options: <strong>Name of the WiFi</strong>, <strong>Disconnect</strong>, and <strong>Forget</strong>. The <strong>Advanced Options</strong> entry to configure the proxy is gone.</p>
+<h2 id="the-fix-adb-commands">The Fix: ADB Commands</h2>
+<p>Instead of the UI, configure the proxy directly via ADB:</p>
+<h3 id="set-the-proxy">Set the proxy</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">adb shell settings put global http_proxy &lt;proxy-ip&gt;:&lt;port&gt;
+</span></span></code></pre></div><p>For example, if Burp Suite is listening on your host machine at <code>192.168.1.10:8080</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">adb shell settings put global http_proxy 192.168.1.10:8080
+</span></span></code></pre></div><h3 id="verify-the-proxy-is-set">Verify the proxy is set</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">adb shell settings get global http_proxy
+</span></span></code></pre></div><h3 id="remove-the-proxy-when-done">Remove the proxy when done</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">adb shell settings delete global http_proxy
+</span></span></code></pre></div><p>Or set it to an empty value:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">adb shell settings put global http_proxy :0
+</span></span></code></pre></div><h2 id="installing-burps-ca-certificate">Installing Burp&rsquo;s CA Certificate</h2>
+<p>To intercept HTTPS traffic, you still need to install Burp&rsquo;s CA certificate in the emulator. For Android 7+, you&rsquo;ll need to install it as a system certificate:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Export Burp cert, convert to PEM, compute hash</span>
+</span></span><span class="line"><span class="cl">openssl x509 -inform DER -in burp.der -out burp.pem
+</span></span><span class="line"><span class="cl"><span class="nv">CERT_HASH</span><span class="o">=</span><span class="k">$(</span>openssl x509 -inform PEM -subject_hash_old -in burp.pem <span class="p">|</span> head -1<span class="k">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Push to system store (requires root emulator)</span>
+</span></span><span class="line"><span class="cl">adb root
+</span></span><span class="line"><span class="cl">adb remount
+</span></span><span class="line"><span class="cl">adb push burp.pem /system/etc/security/cacerts/<span class="si">${</span><span class="nv">CERT_HASH</span><span class="si">}</span>.0
+</span></span><span class="line"><span class="cl">adb shell chmod <span class="m">644</span> /system/etc/security/cacerts/<span class="si">${</span><span class="nv">CERT_HASH</span><span class="si">}</span>.0
+</span></span><span class="line"><span class="cl">adb reboot
+</span></span></code></pre></div><h2 id="quick-reference">Quick Reference</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Action</th>
+					<th>Command</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Set proxy</td>
+					<td><code>adb shell settings put global http_proxy IP:PORT</code></td>
+			</tr>
+			<tr>
+					<td>Check proxy</td>
+					<td><code>adb shell settings get global http_proxy</code></td>
+			</tr>
+			<tr>
+					<td>Clear proxy</td>
+					<td><code>adb shell settings delete global http_proxy</code></td>
+			</tr>
+	</tbody>
+</table>
+<p>This workaround works reliably across Genymotion versions where the WiFi Advanced Options menu is broken.</p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/android">android</a><a class="tag" href="/tags/mobile-security">mobile-security</a><a class="tag" href="/tags/proxy">proxy</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/morty-sherlocked-android-ctf/">
+      
+      <img class="related-img" src="https://miro.medium.com/max/315/0*i7VdsGMh6eSHra7P" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">Morty Sherlocked: Android Application CTF Challenge Walkthrough</h3>
+        <span class="related-meta">Sep 27, 2020 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/planet-x-android-ctf/">
+      
+      <img class="related-img" src="https://miro.medium.com/max/326/0*flK6JdG83nNWaUfb" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">Planet X: Android Application CTF Challenge Walkthrough</h3>
+        <span class="related-meta">Sep 27, 2020 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/universe-weird-c132-android-ctf/">
+      
+      <div class="related-img-placeholder"></div>
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">Universe Weird C132: Android Application CTF Challenge Walkthrough</h3>
+        <span class="related-meta">Sep 27, 2020 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/shodan-censys-subfinder-integration/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Integrating Shodan and Censys API Keys into Subfinder</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/security-engineer-interview-questions-part-1/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Security Engineer Interview Questions Part-1</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

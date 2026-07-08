@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="When you get promoted, you stop fixing bugs and start choosing battles. No StackOverflow for that.">
+<meta name="author" content="Saurabh Jain">
+<title>The Day Google Stopped Helping Me at Work · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="The Day Google Stopped Helping Me at Work">
+<meta property="og:description" content="When you get promoted, you stop fixing bugs and start choosing battles. No StackOverflow for that.">
+<meta property="og:url"         content="http://localhost:1313/posts/the-day-google-stopped-helping-me-at-work/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:886/1*wTS0hn9JV8FhTnB_1UUnJA.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:886/1*wTS0hn9JV8FhTnB_1UUnJA.png">
+
+
+<meta property="article:published_time" content="2026-01-23T00:00:00Z">
+<meta property="article:tag" content="Career"><meta property="article:tag" content="Security"><meta property="article:tag" content="Leadership"><meta property="article:tag" content="Growth">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="The Day Google Stopped Helping Me at Work">
+<meta name="twitter:description" content="When you get promoted, you stop fixing bugs and start choosing battles. No StackOverflow for that.">
+
+
+<link rel="canonical" href="https://saurabh-jain.medium.com/the-day-google-stopped-helping-me-at-work-338ba621c5b8">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#you-dont-fix-bugs-anymore-you-choose-battles">You Don&rsquo;t Fix Bugs Anymore. You Choose Battles.</a></li>
+    <li><a href="#technical-skills-its-judgment-time-now">Technical Skills? It&rsquo;s Judgment Time Now.</a></li>
+    <li><a href="#security-is-50-shades-of-grey">Security is 50 Shades of Grey</a></li>
+    <li><a href="#welcome-to-senior-mode">Welcome to Senior Mode</a></li>
+    <li><a href="#the-takeaway">The Takeaway</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/career">Career</a><a class="tag" href="/tags/security">Security</a><a class="tag" href="/tags/leadership">Leadership</a><a class="tag" href="/tags/growth">Growth</a></div>
+        
+        <h1 class="post-title">The Day Google Stopped Helping Me at Work</h1>
+        <p class="post-subtitle">When you get promoted, you stop fixing bugs and start choosing battles. No StackOverflow for that.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>January 23, 2026</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://saurabh-jain.medium.com/the-day-google-stopped-helping-me-at-work-338ba621c5b8" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:886/1*wTS0hn9JV8FhTnB_1UUnJA.png" alt="The Day Google Stopped Helping Me at Work" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://saurabh-jain.medium.com/the-day-google-stopped-helping-me-at-work-338ba621c5b8" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><blockquote>
+<p>This article was originally published on <a href="https://saurabh-jain.medium.com/the-day-google-stopped-helping-me-at-work-338ba621c5b8">Medium</a>. Read the full version there.</p>
+</blockquote>
+<h2 id="you-dont-fix-bugs-anymore-you-choose-battles">You Don&rsquo;t Fix Bugs Anymore. You Choose Battles.</h2>
+<p>When you first enter cybersecurity, the work looks simple. <strong>Find issue. Fix issue. Move on.</strong> It mirrors 8-bit logic — bad actors emerge, you respond with solutions, you advance.</p>
+<p>Then you get promoted… and things get weird.</p>
+<p>You transition from fixing problems to deciding which problems <em>deserve</em> to be fixed. Your new daily responsibilities:</p>
+<ol>
+<li><strong>The Existential Crisis</strong> — &ldquo;This vulnerability exists… but should we really fix it?&rdquo;</li>
+<li><strong>The Gambler&rsquo;s Itch</strong> — &ldquo;It&rsquo;s risky, but I&rsquo;m feeling lucky today.&rdquo;</li>
+<li><strong>The Stability Fear</strong> — Worrying that security fixes might destabilize production systems</li>
+</ol>
+<h2 id="technical-skills-its-judgment-time-now">Technical Skills? It&rsquo;s Judgment Time Now.</h2>
+<p>At senior levels, the role shifts from technical execution to strategic decision-making. You navigate questions like:</p>
+<ul>
+<li>Do we accept this risk or escalate it?</li>
+<li>Do I challenge leadership even if it creates friction?</li>
+<li>Do I address something preemptively or wait for incidents?</li>
+</ul>
+<p>No online resource has answers. There&rsquo;s no StackOverflow thread for &ldquo;should I push back on the VP about this auth bypass during a product freeze.&rdquo; Only anxiety and responsibility.</p>
+<h2 id="security-is-50-shades-of-grey">Security is 50 Shades of Grey</h2>
+<p>Security decisions rarely have a clear right or wrong answer. Consider this scenario: A vulnerability exists with low exploitation probability but high business impact, and substantial remediation costs.</p>
+<p>Do you:</p>
+<ul>
+<li>Fix it and risk destabilizing production?</li>
+<li>Ignore it and hope no one finds it first?</li>
+<li>Document risk acceptance that nobody reads?</li>
+</ul>
+<p>The field becomes political, strategic, and fundamentally human — balancing panicked stakeholders, security-averse developers, and budget-conscious management.</p>
+<h2 id="welcome-to-senior-mode">Welcome to Senior Mode</h2>
+<p>Uncertainty isn&rsquo;t inexperience. It&rsquo;s the sign that you understand real consequences.</p>
+<p>Junior engineers ask: &ldquo;Did I miss an alert?&rdquo;<br>
+Senior engineers ask: &ldquo;Did I just create a future apology post scenario?&rdquo;</p>
+<p>The weight you feel is responsibility. Your decisions protect businesses, customers, reputations, and careers. One miscalculation triggers:</p>
+<ul>
+<li>Social media uproar</li>
+<li>Executive scrutiny</li>
+<li>Your name in the incident report</li>
+</ul>
+<h2 id="the-takeaway">The Takeaway</h2>
+<p>Feeling uncertain doesn&rsquo;t mean you&rsquo;re inexperienced. It means you&rsquo;re finally making decisions that matter.</p>
+<p>That heaviness is growth. Embrace it — or at least stop Googling your way out of it.</p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/career">Career</a><a class="tag" href="/tags/security">Security</a><a class="tag" href="/tags/leadership">Leadership</a><a class="tag" href="/tags/growth">Growth</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1072/1*OqaoatIVKME7GHoLVCC6dw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AWS</span>
+        <h3 class="related-card-title">Unauthenticated Access to AWS via Cognito Identity Pool ID</h3>
+        <span class="related-meta">May 5, 2026 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-fundamentals-for-beginners/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*_lSj8t4cB6Nko0_3eyic6A.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">Security</span>
+        <h3 class="related-card-title">Security Fundamentals for Beginners</h3>
+        <span class="related-meta">Sep 11, 2025 · 3 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*BbypzEZUlcOgPdyhBlfbaQ.jpeg" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AI</span>
+        <h3 class="related-card-title">Prompting Cheat Sheet for Security Engineers</h3>
+        <span class="related-meta">Aug 18, 2025 · 3 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/20-vulnerabilities-in-a-static-website/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">20&#43; Vulnerabilities in a Static Website</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Unauthenticated Access to AWS via Cognito Identity Pool ID</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

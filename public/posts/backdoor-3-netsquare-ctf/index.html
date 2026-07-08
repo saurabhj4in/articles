@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Walkthrough of BackDoor 3 — the most complex challenge in NET-SQUARE&#39;s series, requiring multi-step extraction combining static analysis, runtime instrumentation, and potentially native library inspection.">
+<meta name="author" content="Saurabh Jain">
+<title>BackDoor 3: NET-SQUARE Hacking Warm-Up Mobile Application Challenge · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="BackDoor 3: NET-SQUARE Hacking Warm-Up Mobile Application Challenge">
+<meta property="og:description" content="Walkthrough of BackDoor 3 — the most complex challenge in NET-SQUARE&#39;s series, requiring multi-step extraction combining static analysis, runtime instrumentation, and potentially native library inspection.">
+<meta property="og:url"         content="http://localhost:1313/posts/backdoor-3-netsquare-ctf/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:660/1*qMud2KYa809O8CPsOY-Fpg.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:660/1*qMud2KYa809O8CPsOY-Fpg.png">
+
+
+<meta property="article:published_time" content="2021-06-09T00:00:00Z">
+<meta property="article:tag" content="android"><meta property="article:tag" content="ctf"><meta property="article:tag" content="reverse-engineering">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="BackDoor 3: NET-SQUARE Hacking Warm-Up Mobile Application Challenge">
+<meta name="twitter:description" content="Walkthrough of BackDoor 3 — the most complex challenge in NET-SQUARE&#39;s series, requiring multi-step extraction combining static analysis, runtime instrumentation, and potentially native library inspection.">
+
+
+<link rel="canonical" href="https://medium.com/bugbountywriteup/backdoor-3-walkthrough-of-net-square-hacking-warm-up-mobile-application-challenge-1f15abdf306e">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#tools-required">Tools Required</a></li>
+    <li><a href="#setup">Setup</a></li>
+    <li><a href="#approach-progressive-analysis">Approach: Progressive Analysis</a>
+      <ul>
+        <li><a href="#step-1-map-the-authentication-flow">Step 1: Map the Authentication Flow</a></li>
+        <li><a href="#step-2-check-for-native-methods-jni">Step 2: Check for Native Methods (JNI)</a></li>
+        <li><a href="#step-3-static-crypto-analysis">Step 3: Static Crypto Analysis</a></li>
+        <li><a href="#step-4-dynamic-analysis-with-frida">Step 4: Dynamic Analysis with Frida</a></li>
+        <li><a href="#step-5-runtime-memory-inspection">Step 5: Runtime Memory Inspection</a></li>
+      </ul>
+    </li>
+    <li><a href="#comparison-across-the-series">Comparison Across the Series</a></li>
+    <li><a href="#key-lessons">Key Lessons</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/android">android</a><a class="tag" href="/tags/ctf">ctf</a><a class="tag" href="/tags/reverse-engineering">reverse-engineering</a></div>
+        
+        <h1 class="post-title">BackDoor 3: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</h1>
+        <p class="post-subtitle">Walkthrough of BackDoor 3 — the most complex challenge in NET-SQUARE&#39;s series, requiring multi-step extraction combining static analysis, runtime instrumentation, and potentially native library inspection.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>June 9, 2021</time>
+              <span class="dot">·</span>
+              <span>3 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://medium.com/bugbountywriteup/backdoor-3-walkthrough-of-net-square-hacking-warm-up-mobile-application-challenge-1f15abdf306e" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:660/1*qMud2KYa809O8CPsOY-Fpg.png" alt="BackDoor 3: NET-SQUARE Hacking Warm-Up Mobile Application Challenge" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://medium.com/bugbountywriteup/backdoor-3-walkthrough-of-net-square-hacking-warm-up-mobile-application-challenge-1f15abdf306e" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><p>BackDoor 3 is the most complex challenge in NET-SQUARE&rsquo;s Hacking Warm-Up series — rated at 6 minutes read time versus 3–4 for the previous two. The credentials are hidden through multiple layers, requiring both static and potentially dynamic analysis to recover.</p>
+<blockquote>
+<p>Try the challenge yourself first: find the APK in NET-SQUARE&rsquo;s GitHub repository.</p>
+</blockquote>
+<h2 id="tools-required">Tools Required</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Tool</th>
+					<th>Purpose</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>adb</strong></td>
+					<td>Communicate with device/emulator</td>
+			</tr>
+			<tr>
+					<td><strong>apktool</strong></td>
+					<td>Decompile APK</td>
+			</tr>
+			<tr>
+					<td><strong>jadx-gui</strong></td>
+					<td>Java decompiler</td>
+			</tr>
+			<tr>
+					<td><strong>Ghidra</strong></td>
+					<td>Native library (<code>.so</code>) reverse engineering</td>
+			</tr>
+			<tr>
+					<td><strong>Frida</strong></td>
+					<td>Runtime instrumentation</td>
+			</tr>
+			<tr>
+					<td><strong>CyberChef</strong></td>
+					<td>Decode/decrypt values</td>
+			</tr>
+			<tr>
+					<td><strong>Android Studio</strong></td>
+					<td>Emulator</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="setup">Setup</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">adb devices
+</span></span><span class="line"><span class="cl">adb install backdoor3.apk
+</span></span></code></pre></div><h2 id="approach-progressive-analysis">Approach: Progressive Analysis</h2>
+<p>With each BackDoor challenge the complexity increases. BackDoor 3 likely involves one or more of:</p>
+<ul>
+<li>Credentials computed at runtime from device properties</li>
+<li>Multi-step encoding/encryption</li>
+<li>Native library generating or storing the credential</li>
+<li>Network-fetched credential with local verification</li>
+</ul>
+<h3 id="step-1-map-the-authentication-flow">Step 1: Map the Authentication Flow</h3>
+<p>Open in jadx-gui and trace the login button&rsquo;s <code>onClick</code> → follow every function call until you find the validation logic.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// What you&#39;re looking for — any comparison of user input</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">getSecret</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// where does getSecret() come from?</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">showSuccess</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Map the call graph: if <code>getSecret()</code> calls a native method, you need Ghidra.</p>
+<h3 id="step-2-check-for-native-methods-jni">Step 2: Check for Native Methods (JNI)</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// JNI declaration in Java</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">native</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">getPassword</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">static</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">System</span><span class="p">.</span><span class="na">loadLibrary</span><span class="p">(</span><span class="s">&#34;backdoor3&#34;</span><span class="p">);</span><span class="w"> </span><span class="c1">// loads libbackdoor3.so</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>If you see <code>native</code> keyword, extract and reverse the <code>.so</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Unpack APK</span>
+</span></span><span class="line"><span class="cl">unzip backdoor3.apk -d backdoor3_out
+</span></span><span class="line"><span class="cl">ls backdoor3_out/lib/arm64-v8a/
+</span></span><span class="line"><span class="cl"><span class="c1"># → libbackdoor3.so</span>
+</span></span></code></pre></div><p>Open <code>libbackdoor3.so</code> in <strong>Ghidra</strong> → Functions → find <code>Java_com_package_Class_getPassword</code>.</p>
+<h3 id="step-3-static-crypto-analysis">Step 3: Static Crypto Analysis</h3>
+<p>The native function may implement simple crypto. Look for:</p>
+<ul>
+<li>XOR loops</li>
+<li>Hardcoded byte arrays</li>
+<li>String tables</li>
+</ul>
+<p>If you can identify the algorithm statically, replicate it in Python to extract the credential without running the app.</p>
+<h3 id="step-4-dynamic-analysis-with-frida">Step 4: Dynamic Analysis with Frida</h3>
+<p>If static analysis is too complex, instrument at runtime:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Start frida-server on device</span>
+</span></span><span class="line"><span class="cl">adb push frida-server /data/local/tmp/
+</span></span><span class="line"><span class="cl">adb shell chmod <span class="m">755</span> /data/local/tmp/frida-server
+</span></span><span class="line"><span class="cl">adb shell /data/local/tmp/frida-server <span class="p">&amp;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Hook the native function to print its return value</span>
+</span></span><span class="line"><span class="cl">frida -U -n com.netsquare.backdoor3 -l hook.js
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="c1">// hook.js — intercept native getPassword()
+</span></span></span><span class="line"><span class="cl"><span class="nx">Interceptor</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Module</span><span class="p">.</span><span class="nx">findExportByName</span><span class="p">(</span><span class="s2">&#34;libbackdoor3.so&#34;</span><span class="p">,</span> <span class="s2">&#34;Java_com_netsquare_backdoor3_MainActivity_getPassword&#34;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">onLeave</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">retval</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">var</span> <span class="nx">jniEnv</span> <span class="o">=</span> <span class="nx">Java</span><span class="p">.</span><span class="nx">vm</span><span class="p">.</span><span class="nx">getEnv</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Password: &#34;</span> <span class="o">+</span> <span class="nx">jniEnv</span><span class="p">.</span><span class="nx">getStringUtfChars</span><span class="p">(</span><span class="nx">retval</span><span class="p">,</span> <span class="kc">null</span><span class="p">).</span><span class="nx">readCString</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span></code></pre></div><p>Alternatively, hook the Java-layer comparison directly:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">Java</span><span class="p">.</span><span class="nx">perform</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">var</span> <span class="nb">String</span> <span class="o">=</span> <span class="nx">Java</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s2">&#34;java.lang.String&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">String</span><span class="p">.</span><span class="nx">equals</span><span class="p">.</span><span class="nx">implementation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">other</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Comparing: &#34;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&#34; vs &#34;</span> <span class="o">+</span> <span class="nx">other</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">equals</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">other</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span>
+</span></span></code></pre></div><h3 id="step-5-runtime-memory-inspection">Step 5: Runtime Memory Inspection</h3>
+<p>If all else fails, trigger the login with a known wrong password and search memory for the correct value using Frida&rsquo;s memory scan.</p>
+<h2 id="comparison-across-the-series">Comparison Across the Series</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Challenge</th>
+					<th>Hiding Technique</th>
+					<th>Key Skill</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>BackDoor 1</td>
+					<td>Plaintext in resources</td>
+					<td>Basic decompilation</td>
+			</tr>
+			<tr>
+					<td>BackDoor 2</td>
+					<td>Encoded in Java</td>
+					<td>Recognise and reverse encoding</td>
+			</tr>
+			<tr>
+					<td>BackDoor 3</td>
+					<td>Native library / runtime</td>
+					<td>Ghidra + Frida</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="key-lessons">Key Lessons</h2>
+<ol>
+<li><strong>Complexity ≠ Security</strong> — even native libraries are reversible with Ghidra; Frida can intercept any runtime value</li>
+<li><strong>Client-side secrets don&rsquo;t exist</strong> — anything the app needs to check locally can be extracted by the attacker</li>
+<li><strong>Frida is essential for advanced Android testing</strong> — hooks work on production apps on rooted devices</li>
+</ol>
+<hr>
+<p><em>Part of NET-SQUARE&rsquo;s mobile application CTF series. Advanced difficulty — requires Frida and Ghidra.</em></p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/android">android</a><a class="tag" href="/tags/ctf">ctf</a><a class="tag" href="/tags/reverse-engineering">reverse-engineering</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/backdoor-1-netsquare-ctf/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:660/1*qMud2KYa809O8CPsOY-Fpg.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">BackDoor 1: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</h3>
+        <span class="related-meta">Jun 9, 2021 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/backdoor-2-netsquare-ctf/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:660/1*qMud2KYa809O8CPsOY-Fpg.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">BackDoor 2: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</h3>
+        <span class="related-meta">Jun 9, 2021 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/mortys-new-tool-android-ctf/">
+      
+      <img class="related-img" src="https://miro.medium.com/max/370/0*RLVBXPPQQBhF5VjI" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">android</span>
+        <h3 class="related-card-title">Morty&#39;s New Tool: Android Application CTF Challenge Walkthrough</h3>
+        <span class="related-meta">Sep 27, 2020 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/morty-sherlocked-android-ctf/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Morty Sherlocked: Android Application CTF Challenge Walkthrough</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/backdoor-2-netsquare-ctf/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">BackDoor 2: NET-SQUARE Hacking Warm-Up Mobile Application Challenge</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

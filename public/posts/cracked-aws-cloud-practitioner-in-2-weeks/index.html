@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="How I passed AWS Certified Cloud Practitioner (CLF-C02) in two weeks with prior hands-on experience and a focused study plan.">
+<meta name="author" content="Saurabh Jain">
+<title>Cracked AWS Cloud Practitioner in 2 Weeks · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Cracked AWS Cloud Practitioner in 2 Weeks">
+<meta property="og:description" content="How I passed AWS Certified Cloud Practitioner (CLF-C02) in two weeks with prior hands-on experience and a focused study plan.">
+<meta property="og:url"         content="http://localhost:1313/posts/cracked-aws-cloud-practitioner-in-2-weeks/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:1200/1*Oi277idbrjkDAOGg8JPqLQ.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:1200/1*Oi277idbrjkDAOGg8JPqLQ.png">
+
+
+<meta property="article:published_time" content="2025-07-10T00:00:00Z">
+<meta property="article:tag" content="AWS"><meta property="article:tag" content="Certification"><meta property="article:tag" content="Cloud"><meta property="article:tag" content="Learning">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Cracked AWS Cloud Practitioner in 2 Weeks">
+<meta name="twitter:description" content="How I passed AWS Certified Cloud Practitioner (CLF-C02) in two weeks with prior hands-on experience and a focused study plan.">
+
+
+<link rel="canonical" href="https://medium.com/readers-club/cracked-aws-cloud-practitioner-in-2-weeks-7ec79dbf4934">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-study-stack">The Study Stack</a>
+      <ul>
+        <li><a href="#week-1-structured-learning">Week 1: Structured Learning</a></li>
+        <li><a href="#week-2-practice-papers">Week 2: Practice Papers</a></li>
+      </ul>
+    </li>
+    <li><a href="#what-actually-gets-tested">What Actually Gets Tested</a></li>
+    <li><a href="#tips-that-actually-helped">Tips That Actually Helped</a></li>
+    <li><a href="#the-exam-experience">The Exam Experience</a></li>
+    <li><a href="#worth-it">Worth It?</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/aws">AWS</a><a class="tag" href="/tags/certification">Certification</a><a class="tag" href="/tags/cloud">Cloud</a><a class="tag" href="/tags/learning">Learning</a></div>
+        
+        <h1 class="post-title">Cracked AWS Cloud Practitioner in 2 Weeks</h1>
+        <p class="post-subtitle">How I passed AWS Certified Cloud Practitioner (CLF-C02) in two weeks with prior hands-on experience and a focused study plan.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>July 10, 2025</time>
+              <span class="dot">·</span>
+              <span>3 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://medium.com/readers-club/cracked-aws-cloud-practitioner-in-2-weeks-7ec79dbf4934" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:1200/1*Oi277idbrjkDAOGg8JPqLQ.png" alt="Cracked AWS Cloud Practitioner in 2 Weeks" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://medium.com/readers-club/cracked-aws-cloud-practitioner-in-2-weeks-7ec79dbf4934" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><blockquote>
+<p>This article was originally published on <a href="https://medium.com/readers-club/cracked-aws-cloud-practitioner-in-2-weeks-7ec79dbf4934">Medium</a>. Read the full version there.</p>
+</blockquote>
+<p>I already had hands-on AWS experience. But formal certification felt overdue — and the AWS Certified Cloud Practitioner (CLF-C02) seemed like the right place to nail down the gaps: billing models, support tiers, global infrastructure, the services I&rsquo;d never actually touched.</p>
+<p>Two weeks. Passed.</p>
+<p>Here&rsquo;s exactly what I did.</p>
+<h2 id="the-study-stack">The Study Stack</h2>
+<h3 id="week-1-structured-learning">Week 1: Structured Learning</h3>
+<p><strong>Stéphane Maarek&rsquo;s AWS Cloud Practitioner course on Udemy</strong> was the foundation. It&rsquo;s thorough without being bloated — covers all the core service categories, pricing models, and architectural concepts the exam tests.</p>
+<p>Key areas I focused on that hands-on experience doesn&rsquo;t naturally cover:</p>
+<ul>
+<li><strong>Support plans</strong> — Basic, Developer, Business, Enterprise. Know what&rsquo;s included in each.</li>
+<li><strong>Billing and pricing</strong> — On-Demand vs Reserved vs Spot vs Savings Plans. The exam loves this.</li>
+<li><strong>Global infrastructure</strong> — Regions, Availability Zones, Edge Locations, Local Zones. Know the differences.</li>
+<li><strong>Shared responsibility model</strong> — What AWS manages vs what you manage varies by service type.</li>
+</ul>
+<h3 id="week-2-practice-papers">Week 2: Practice Papers</h3>
+<p>Practice exams are where you actually learn the exam&rsquo;s vocabulary and trick-question style.</p>
+<table>
+	<thead>
+			<tr>
+					<th>Source</th>
+					<th>Papers Completed</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Stéphane Maarek (Udemy)</td>
+					<td>6</td>
+			</tr>
+			<tr>
+					<td>Neal Davis (Udemy)</td>
+					<td>6</td>
+			</tr>
+			<tr>
+					<td>Kanan Nirav&rsquo;s website</td>
+					<td>23</td>
+			</tr>
+	</tbody>
+</table>
+<p>That&rsquo;s a lot of practice papers. It felt like overkill. It wasn&rsquo;t.</p>
+<p>The CLF-C02 tests nuance: &ldquo;Which of these is <em>not</em> a benefit of the cloud?&rdquo; requires knowing all four options well enough to identify the one that doesn&rsquo;t fit. Practice papers expose which concepts you only <em>think</em> you know.</p>
+<h2 id="what-actually-gets-tested">What Actually Gets Tested</h2>
+<p>Things I underestimated before studying:</p>
+<ul>
+<li><strong>Well-Architected Framework</strong> — 6 pillars (Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization, Sustainability). Expect questions on all of them.</li>
+<li><strong>Service categories</strong> — knowing whether something is IaaS, PaaS, or SaaS, and which AWS services fall into each</li>
+<li><strong>High availability vs fault tolerance</strong> — different concepts, different services</li>
+<li><strong>Cost optimization services</strong> — Cost Explorer, Budgets, Trusted Advisor, Cost and Usage Report</li>
+</ul>
+<h2 id="tips-that-actually-helped">Tips That Actually Helped</h2>
+<p><strong>Don&rsquo;t memorize, understand.</strong> The exam tests comprehension, not recall. &ldquo;Why would you use S3 over EFS?&rdquo; matters more than knowing S3&rsquo;s exact pricing per GB.</p>
+<p><strong>Do the practice papers under time pressure.</strong> 65 questions in 90 minutes. That&rsquo;s 83 seconds per question. Comfortable speed during practice, no panic during the exam.</p>
+<p><strong>Flag and come back.</strong> Don&rsquo;t get stuck. Mark uncertain questions, finish the test, then revisit. You&rsquo;ll often see clues in later questions.</p>
+<p><strong>Read every answer choice before picking.</strong> AWS exams are notorious for having two answers that are both technically correct, with one being <em>more</em> correct for the specific scenario described.</p>
+<h2 id="the-exam-experience">The Exam Experience</h2>
+<p>Took it online via Pearson VUE. Remote proctoring worked fine. The actual exam felt slightly easier than the Neal Davis practice papers — which is the right calibration (practice harder, test easier).</p>
+<h2 id="worth-it">Worth It?</h2>
+<p>For someone already working in cloud environments: yes, but mostly for the credentials and the forced review of billing/support/compliance concepts you might never touch day-to-day.</p>
+<p>If you&rsquo;re new to cloud: this is an excellent starting point. The concepts map to any cloud provider, and the structured framework gives you vocabulary that makes everything else easier.</p>
+<p>Two weeks of focused effort. Manageable, and worth it.</p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/aws">AWS</a><a class="tag" href="/tags/certification">Certification</a><a class="tag" href="/tags/cloud">Cloud</a><a class="tag" href="/tags/learning">Learning</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1072/1*OqaoatIVKME7GHoLVCC6dw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AWS</span>
+        <h3 class="related-card-title">Unauthenticated Access to AWS via Cognito Identity Pool ID</h3>
+        <span class="related-meta">May 5, 2026 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-fundamentals-for-beginners/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*_lSj8t4cB6Nko0_3eyic6A.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">Security</span>
+        <h3 class="related-card-title">Security Fundamentals for Beginners</h3>
+        <span class="related-meta">Sep 11, 2025 · 3 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/security-engineer-interview-questions-part-6/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Security Engineer Interview Questions Part-6</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/the-last-time-youll-ever-use-a-password/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">The Last Time You&#39;ll Ever Use a Password</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

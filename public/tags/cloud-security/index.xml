@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Saurabh Jain</title>
+    <link>http://localhost:1313/</link>
+    <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <managingEditor>Saurabh Jain</managingEditor>
+    <atom:link href="http://localhost:1313/tags/cloud-security/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Unauthenticated Access to AWS via Cognito Identity Pool ID</title>
+      <link>http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/</link>
+      <pubDate>Tue, 05 May 2026 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/</guid>
+      <description>How an exposed Cognito Identity Pool ID can hand attackers temporary AWS credentials — no login required.</description>
+    </item>
+    
+  </channel>
+</rss>

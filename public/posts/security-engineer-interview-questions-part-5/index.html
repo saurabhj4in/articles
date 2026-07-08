@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Part 5 of the series presents a vulnerable Java code snippet and walks through identifying multiple security flaws including SQL injection, hardcoded credentials, and missing input validation.">
+<meta name="author" content="Saurabh Jain">
+<title>Security Engineer Interview Questions Part-5 · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Security Engineer Interview Questions Part-5">
+<meta property="og:description" content="Part 5 of the series presents a vulnerable Java code snippet and walks through identifying multiple security flaws including SQL injection, hardcoded credentials, and missing input validation.">
+<meta property="og:url"         content="http://localhost:1313/posts/security-engineer-interview-questions-part-5/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:984/0*wkARrwigupJwn0qB.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:984/0*wkARrwigupJwn0qB.png">
+
+
+<meta property="article:published_time" content="2024-10-23T00:00:00Z">
+<meta property="article:tag" content="security"><meta property="article:tag" content="interview"><meta property="article:tag" content="code-review">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Security Engineer Interview Questions Part-5">
+<meta name="twitter:description" content="Part 5 of the series presents a vulnerable Java code snippet and walks through identifying multiple security flaws including SQL injection, hardcoded credentials, and missing input validation.">
+
+
+<link rel="canonical" href="https://saurabh-jain.medium.com/security-engineer-interview-questions-part-5-20a4cbd97258">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#question-1-source-code-vulnerabilities-analysis">Question 1: Source Code Vulnerabilities Analysis</a>
+      <ul>
+        <li><a href="#identified-vulnerabilities">Identified Vulnerabilities</a></li>
+        <li><a href="#how-to-fix-each-vulnerability">How to Fix Each Vulnerability</a></li>
+        <li><a href="#why-this-matters-in-interviews">Why This Matters in Interviews</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/security">security</a><a class="tag" href="/tags/interview">interview</a><a class="tag" href="/tags/code-review">code-review</a></div>
+        
+        <h1 class="post-title">Security Engineer Interview Questions Part-5</h1>
+        <p class="post-subtitle">Part 5 of the series presents a vulnerable Java code snippet and walks through identifying multiple security flaws including SQL injection, hardcoded credentials, and missing input validation.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>October 23, 2024</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://saurabh-jain.medium.com/security-engineer-interview-questions-part-5-20a4cbd97258" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:984/0*wkARrwigupJwn0qB.png" alt="Security Engineer Interview Questions Part-5" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://saurabh-jain.medium.com/security-engineer-interview-questions-part-5-20a4cbd97258" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><h2 id="question-1-source-code-vulnerabilities-analysis">Question 1: Source Code Vulnerabilities Analysis</h2>
+<p>This question presents a vulnerable Java code snippet and asks you to identify all security flaws.</p>
+<h3 id="identified-vulnerabilities">Identified Vulnerabilities</h3>
+<ul>
+<li><strong>Encoding Issue:</strong> Use of obsolete <code>ISO-8859-1</code> charset and encoding. Instead use <code>UTF-8</code> (Line 2)</li>
+<li><strong>Hardcoded Credentials:</strong> Hard-coded username &ldquo;root&rdquo; present in connection string (Line 12)</li>
+<li><strong>Weak Authentication:</strong> Database connection accepts empty passwords (Line 12)</li>
+<li><strong>SQL Injection:</strong> The code directly concatenates user input (<code>order_id</code>) into the SQL query without sanitization (Line 14)</li>
+<li><strong>Resource Leaks:</strong> Missing proper closure of database connections, statements, and result sets; absent try-catch blocks</li>
+<li><strong>Outdated Driver:</strong> Uses deprecated <code>com.mysql.jdbc.Driver</code> instead of newer <code>com.mysql.cj.jdbc.Driver</code> (Line 11)</li>
+<li><strong>Input Validation Missing:</strong> No validation on <code>order_id</code> parameter, risking XSS and HTML injection (Line 10)</li>
+<li><strong>Exception Handling:</strong> Exceptions lack proper handling throughout the code</li>
+</ul>
+<h3 id="how-to-fix-each-vulnerability">How to Fix Each Vulnerability</h3>
+<p><strong>SQL Injection → Use Parameterised Queries</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Vulnerable</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;SELECT * FROM orders WHERE id = &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">order_id</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Fixed</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">PreparedStatement</span><span class="w"> </span><span class="n">ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">conn</span><span class="p">.</span><span class="na">prepareStatement</span><span class="p">(</span><span class="s">&#34;SELECT * FROM orders WHERE id = ?&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">ps</span><span class="p">.</span><span class="na">setString</span><span class="p">(</span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">order_id</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Hardcoded Credentials → Use Environment Variables or Secrets Manager</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Vulnerable</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;root&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">pass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// Fixed</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">getenv</span><span class="p">(</span><span class="s">&#34;DB_USER&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">pass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">getenv</span><span class="p">(</span><span class="s">&#34;DB_PASS&#34;</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Resource Leaks → Use Try-with-Resources</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="n">Connection</span><span class="w"> </span><span class="n">conn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DriverManager</span><span class="p">.</span><span class="na">getConnection</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">pass</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">PreparedStatement</span><span class="w"> </span><span class="n">ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">conn</span><span class="p">.</span><span class="na">prepareStatement</span><span class="p">(</span><span class="n">query</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">ResultSet</span><span class="w"> </span><span class="n">rs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ps</span><span class="p">.</span><span class="na">executeQuery</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// use resources</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w"> </span><span class="c1">// auto-closed</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Input Validation → Validate and Sanitise</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">order_id</span><span class="p">.</span><span class="na">matches</span><span class="p">(</span><span class="s">&#34;^[0-9]+$&#34;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">IllegalArgumentException</span><span class="p">(</span><span class="s">&#34;Invalid order ID&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="why-this-matters-in-interviews">Why This Matters in Interviews</h3>
+<p>Secure code review is a core skill for security engineers. When asked to review code, work through each layer systematically:</p>
+<ol>
+<li>Input handling and validation</li>
+<li>Authentication and authorisation</li>
+<li>Data access patterns (SQL, NoSQL)</li>
+<li>Error handling and logging</li>
+<li>Secrets management</li>
+<li>Dependencies and versions</li>
+</ol>
+<hr>
+<p><em>Part of a series on real security engineer interview questions from major tech companies.</em></p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/security">security</a><a class="tag" href="/tags/interview">interview</a><a class="tag" href="/tags/code-review">code-review</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-engineer-interview-questions-part-6/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:984/0*q8zdfXehtyNZL3CU.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">security</span>
+        <h3 class="related-card-title">Security Engineer Interview Questions Part-6</h3>
+        <span class="related-meta">Mar 8, 2025 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-engineer-interview-questions-part-3/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/da:true/resize:fit:1200/0*4j21HcmDR1_SDy3Q" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">security</span>
+        <h3 class="related-card-title">Security Engineer Interview Questions Part-3</h3>
+        <span class="related-meta">Oct 9, 2024 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-engineer-interview-questions-part-2/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*jVgNnRIVP2yJ9sx7S5OfnQ.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">security</span>
+        <h3 class="related-card-title">Security Engineer Interview Questions Part-2</h3>
+        <span class="related-meta">Sep 27, 2024 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/security-engineer-interview-questions-part-3/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Security Engineer Interview Questions Part-3</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/ohsint-tryhackme-walkthrough/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">OhSINT TryHackMe Walkthrough</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Automating SPF, DKIM, DMARC, and MTA-STS checks with a simple Python script.">
+<meta name="author" content="Saurabh Jain">
+<title>Built a Python Tool to Automate Email Security Audits · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Built a Python Tool to Automate Email Security Audits">
+<meta property="og:description" content="Automating SPF, DKIM, DMARC, and MTA-STS checks with a simple Python script.">
+<meta property="og:url"         content="http://localhost:1313/posts/python-tool-email-security-audits/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:1200/1*a7JuQQDQyEc7klaR-11byA.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:1200/1*a7JuQQDQyEc7klaR-11byA.png">
+
+
+<meta property="article:published_time" content="2025-09-22T00:00:00Z">
+<meta property="article:tag" content="Python"><meta property="article:tag" content="Email Security"><meta property="article:tag" content="Tools"><meta property="article:tag" content="Automation"><meta property="article:tag" content="DNS">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Built a Python Tool to Automate Email Security Audits">
+<meta name="twitter:description" content="Automating SPF, DKIM, DMARC, and MTA-STS checks with a simple Python script.">
+
+
+<link rel="canonical" href="https://python.plainenglish.io/built-a-python-tool-to-automate-email-security-audits-c639d2affe88">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-the-tool-checks">What the Tool Checks</a></li>
+    <li><a href="#core-logic">Core Logic</a></li>
+    <li><a href="#running-an-audit">Running an Audit</a></li>
+    <li><a href="#common-findings">Common Findings</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/python">Python</a><a class="tag" href="/tags/email-security">Email Security</a><a class="tag" href="/tags/tools">Tools</a><a class="tag" href="/tags/automation">Automation</a><a class="tag" href="/tags/dns">DNS</a></div>
+        
+        <h1 class="post-title">Built a Python Tool to Automate Email Security Audits</h1>
+        <p class="post-subtitle">Automating SPF, DKIM, DMARC, and MTA-STS checks with a simple Python script.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>September 22, 2025</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://python.plainenglish.io/built-a-python-tool-to-automate-email-security-audits-c639d2affe88" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:1200/1*a7JuQQDQyEc7klaR-11byA.png" alt="Built a Python Tool to Automate Email Security Audits" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://python.plainenglish.io/built-a-python-tool-to-automate-email-security-audits-c639d2affe88" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><blockquote>
+<p>This article was originally published on <a href="https://python.plainenglish.io/built-a-python-tool-to-automate-email-security-audits-c639d2affe88">Medium / Plain English</a>. Read the full version there.</p>
+</blockquote>
+<p>Email security is one of those areas everyone knows is important and almost nobody audits regularly. SPF, DKIM, DMARC, MTA-STS — each has its own DNS record format, its own failure mode, and its own way of silently misconfiguring itself over months.</p>
+<p>I got tired of checking these manually. So I built a Python tool to do it automatically.</p>
+<h2 id="what-the-tool-checks">What the Tool Checks</h2>
+<ul>
+<li><strong>SPF</strong> — Is there a valid SPF record? Does it have too many DNS lookups (the 10-lookup limit is a common gotcha)? Is it set to <code>~all</code> (softfail) instead of <code>-all</code> (hardfail)?</li>
+<li><strong>DKIM</strong> — Are common DKIM selectors present (<code>default</code>, <code>google</code>, <code>mail</code>, <code>selector1</code>, <code>selector2</code>)? Is the key length adequate?</li>
+<li><strong>DMARC</strong> — Is there a DMARC record? What&rsquo;s the policy (<code>none</code> / <code>quarantine</code> / <code>reject</code>)? Where do reports go?</li>
+<li><strong>MTA-STS</strong> — Is there an MTA-STS policy enforcing TLS for inbound mail?</li>
+<li><strong>BIMI</strong> — Bonus check: is there a BIMI record for brand-verified logos in email clients?</li>
+</ul>
+<h2 id="core-logic">Core Logic</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">dns.resolver</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">check_spf</span><span class="p">(</span><span class="n">domain</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">answers</span> <span class="o">=</span> <span class="n">dns</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="s1">&#39;TXT&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">rdata</span> <span class="ow">in</span> <span class="n">answers</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">txt</span> <span class="o">=</span> <span class="n">rdata</span><span class="o">.</span><span class="n">to_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&#34;&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">txt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;v=spf1&#39;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;found&#34;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&#34;record&#34;</span><span class="p">:</span> <span class="n">txt</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;found&#34;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;found&#34;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&#34;error&#34;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">check_dmarc</span><span class="p">(</span><span class="n">domain</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dmarc_domain</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;_dmarc.</span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">answers</span> <span class="o">=</span> <span class="n">dns</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">dmarc_domain</span><span class="p">,</span> <span class="s1">&#39;TXT&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">rdata</span> <span class="ow">in</span> <span class="n">answers</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">txt</span> <span class="o">=</span> <span class="n">rdata</span><span class="o">.</span><span class="n">to_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&#34;&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">txt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;v=DMARC1&#39;</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">                <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;found&#34;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&#34;record&#34;</span><span class="p">:</span> <span class="n">txt</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;found&#34;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="p">{</span><span class="s2">&#34;found&#34;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&#34;error&#34;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+</span></span></code></pre></div><h2 id="running-an-audit">Running an Audit</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python email_audit.py --domain example.com --output report.json
+</span></span></code></pre></div><p>Sample output:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;domain&#34;</span><span class="p">:</span> <span class="s2">&#34;example.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;spf&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;found&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;record&#34;</span><span class="p">:</span> <span class="s2">&#34;v=spf1 include:_spf.google.com ~all&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;issues&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;Softfail (~all) allows spoofing to land in spam, not be rejected&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;dmarc&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;found&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;policy&#34;</span><span class="p">:</span> <span class="s2">&#34;none&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;issues&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;Policy is &#39;none&#39; — emails failing DMARC are not rejected or quarantined&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;dkim&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;selectors_found&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;google&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;issues&#34;</span><span class="p">:</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="common-findings">Common Findings</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Issue</th>
+					<th>Risk</th>
+					<th>Fix</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>SPF <code>~all</code> instead of <code>-all</code></td>
+					<td>Spoofed mail lands in spam, not blocked</td>
+					<td>Change to <code>-all</code></td>
+			</tr>
+			<tr>
+					<td>DMARC <code>p=none</code></td>
+					<td>No enforcement; reports only</td>
+					<td>Gradually move to <code>quarantine</code> then <code>reject</code></td>
+			</tr>
+			<tr>
+					<td>No DMARC record</td>
+					<td>Full spoofing possible</td>
+					<td>Add <code>_dmarc.domain.com TXT &quot;v=DMARC1; p=reject; rua=mailto:dmarc@domain.com&quot;</code></td>
+			</tr>
+			<tr>
+					<td>DKIM missing</td>
+					<td>Emails can be modified in transit</td>
+					<td>Configure DKIM in your mail provider</td>
+			</tr>
+	</tbody>
+</table>
+<p>The tool is useful for quickly auditing a list of client domains or running periodic checks in CI to catch regressions when DNS changes go out.</p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/python">Python</a><a class="tag" href="/tags/email-security">Email Security</a><a class="tag" href="/tags/tools">Tools</a><a class="tag" href="/tags/automation">Automation</a><a class="tag" href="/tags/dns">DNS</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/security-fundamentals-for-beginners/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Security Fundamentals for Beginners</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/20-vulnerabilities-in-a-static-website/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">20&#43; Vulnerabilities in a Static Website</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Saurabh Jain</title>
+    <link>http://localhost:1313/</link>
+    <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <managingEditor>Saurabh Jain</managingEditor>
+    <atom:link href="http://localhost:1313/tags/mobile-security/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Resolving Proxy Issue in Genymotion</title>
+      <link>http://localhost:1313/posts/resolving-proxy-issue-genymotion/</link>
+      <pubDate>Mon, 26 Aug 2024 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/resolving-proxy-issue-genymotion/</guid>
+      <description>A quick guide to working around the broken Advanced Options WiFi proxy configuration in Genymotion 3.7.1 by using ADB commands instead.</description>
+    </item>
+    
+    <item>
+      <title>Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications</title>
+      <link>http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/</link>
+      <pubDate>Fri, 03 Nov 2023 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/</guid>
+      <description>CORS is a browser-enforced security mechanism — not a server or OS feature. This article explains why native mobile apps are immune to CORS restrictions and what that means for security testing.</description>
+    </item>
+    
+    <item>
+      <title>Morty Sherlocked: Android Application CTF Challenge Walkthrough</title>
+      <link>http://localhost:1313/posts/morty-sherlocked-android-ctf/</link>
+      <pubDate>Sun, 27 Sep 2020 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/morty-sherlocked-android-ctf/</guid>
+      <description>A beginner-level Android CTF challenge walkthrough covering APK analysis, reverse engineering, and common mobile security vulnerabilities.</description>
+    </item>
+    
+    <item>
+      <title>Planet X: Android Application CTF Challenge Walkthrough</title>
+      <link>http://localhost:1313/posts/planet-x-android-ctf/</link>
+      <pubDate>Sun, 27 Sep 2020 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/planet-x-android-ctf/</guid>
+      <description>Walkthrough of the Planet X Android CTF challenge — a beginner-friendly challenge teaching foundational mobile application security assessment techniques.</description>
+    </item>
+    
+    <item>
+      <title>Universe Weird C132: Android Application CTF Challenge Walkthrough</title>
+      <link>http://localhost:1313/posts/universe-weird-c132-android-ctf/</link>
+      <pubDate>Sun, 27 Sep 2020 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/universe-weird-c132-android-ctf/</guid>
+      <description>Walkthrough of the Universe Weird C132 Android CTF challenge, covering reverse engineering techniques and common mobile application security flaws.</description>
+    </item>
+    
+  </channel>
+</rss>

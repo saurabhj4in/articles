@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="CORS is a browser-enforced security mechanism — not a server or OS feature. This article explains why native mobile apps are immune to CORS restrictions and what that means for security testing.">
+<meta name="author" content="Saurabh Jain">
+<title>Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications">
+<meta property="og:description" content="CORS is a browser-enforced security mechanism — not a server or OS feature. This article explains why native mobile apps are immune to CORS restrictions and what that means for security testing.">
+<meta property="og:url"         content="http://localhost:1313/posts/cors-doesnt-apply-to-mobile-apps/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/da:true/resize:fit:1174/0*j5MBBCZQFut9cmFL">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/da:true/resize:fit:1174/0*j5MBBCZQFut9cmFL">
+
+
+<meta property="article:published_time" content="2023-11-03T00:00:00Z">
+<meta property="article:tag" content="mobile-security"><meta property="article:tag" content="cors"><meta property="article:tag" content="security">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications">
+<meta name="twitter:description" content="CORS is a browser-enforced security mechanism — not a server or OS feature. This article explains why native mobile apps are immune to CORS restrictions and what that means for security testing.">
+
+
+<link rel="canonical" href="https://medium.com/javascript-in-plain-english/security-beyond-browsers-why-cors-doesnt-apply-to-mobile-applications-99e6ab3e8fe7">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-cors">What is CORS?</a></li>
+    <li><a href="#why-native-mobile-apps-are-not-subject-to-cors">Why Native Mobile Apps Are Not Subject to CORS</a></li>
+    <li><a href="#what-about-webviews">What About WebViews?</a></li>
+    <li><a href="#security-implications">Security Implications</a>
+      <ul>
+        <li><a href="#for-developers">For Developers</a></li>
+        <li><a href="#for-security-testers">For Security Testers</a></li>
+      </ul>
+    </li>
+    <li><a href="#common-interview-trap">Common Interview Trap</a></li>
+    <li><a href="#summary">Summary</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/mobile-security">mobile-security</a><a class="tag" href="/tags/cors">cors</a><a class="tag" href="/tags/security">security</a></div>
+        
+        <h1 class="post-title">Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications</h1>
+        <p class="post-subtitle">CORS is a browser-enforced security mechanism — not a server or OS feature. This article explains why native mobile apps are immune to CORS restrictions and what that means for security testing.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>November 3, 2023</time>
+              <span class="dot">·</span>
+              <span>3 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://medium.com/javascript-in-plain-english/security-beyond-browsers-why-cors-doesnt-apply-to-mobile-applications-99e6ab3e8fe7" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/da:true/resize:fit:1174/0*j5MBBCZQFut9cmFL" alt="Security Beyond Browsers: Why CORS Doesn&#39;t Apply to Mobile Applications" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://medium.com/javascript-in-plain-english/security-beyond-browsers-why-cors-doesnt-apply-to-mobile-applications-99e6ab3e8fe7" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><p>In a number of interviews and security assessments, I&rsquo;ve been asked:</p>
+<ul>
+<li><em>Why do mobile applications not have a CORS vulnerability?</em></li>
+<li><em>Can we exploit CORS in mobile applications?</em></li>
+<li><em>Mobile apps have WebViews — do they inherit browser vulnerabilities like CORS?</em></li>
+</ul>
+<p>This article settles the confusion once and for all.</p>
+<h2 id="what-is-cors">What is CORS?</h2>
+<p><strong>Cross-Origin Resource Sharing (CORS)</strong> is a security feature implemented by web browsers to control how web pages from one domain can request and access resources from a different domain.</p>
+<p>When a browser makes a cross-origin request (e.g., <code>evil.com</code> calling <code>api.bank.com</code>), it:</p>
+<ol>
+<li>Checks if the server&rsquo;s response includes <code>Access-Control-Allow-Origin</code></li>
+<li>If the origin isn&rsquo;t allowed, <strong>blocks the JavaScript from reading the response</strong></li>
+</ol>
+<p>The critical word: <strong>browser</strong>. CORS is enforced by the browser engine — not the server, not the OS, not the network.</p>
+<h2 id="why-native-mobile-apps-are-not-subject-to-cors">Why Native Mobile Apps Are Not Subject to CORS</h2>
+<p>A native Android or iOS app uses system HTTP clients:</p>
+<ul>
+<li>Android: <code>OkHttp</code>, <code>HttpURLConnection</code>, <code>Retrofit</code></li>
+<li>iOS: <code>URLSession</code>, <code>Alamofire</code></li>
+</ul>
+<p>These clients make HTTP requests <strong>without a browser engine</strong>. There is no code that checks <code>Access-Control-Allow-Origin</code> headers before returning data to the app. The full response is always available to the app regardless of what CORS headers the server sends.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-kotlin" data-lang="kotlin"><span class="line"><span class="cl"><span class="c1">// Android — this call goes through regardless of CORS headers
+</span></span></span><span class="line"><span class="cl"><span class="k">val</span> <span class="py">client</span> <span class="p">=</span> <span class="n">OkHttpClient</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">val</span> <span class="py">request</span> <span class="p">=</span> <span class="nc">Request</span><span class="p">.</span><span class="n">Builder</span><span class="p">().</span><span class="n">url</span><span class="p">(</span><span class="s2">&#34;https://api.other-domain.com/data&#34;</span><span class="p">).</span><span class="n">build</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">client</span><span class="p">.</span><span class="n">newCall</span><span class="p">(</span><span class="n">request</span><span class="p">).</span><span class="n">execute</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// response.body is always accessible — no CORS check
+</span></span></span></code></pre></div><p>The server still receives the request and returns the response. CORS only prevents the <em>browser</em> from letting JavaScript <em>read</em> that response. It has no effect on code running natively on a device.</p>
+<h2 id="what-about-webviews">What About WebViews?</h2>
+<p>Mobile apps that embed WebViews <strong>do</strong> run a browser engine internally. CORS <em>can</em> apply within the WebView&rsquo;s JavaScript context — but only to JavaScript making cross-origin requests from within the WebView.</p>
+<p>Native code communicating with APIs directly (outside the WebView) is still not subject to CORS.</p>
+<table>
+	<thead>
+			<tr>
+					<th>Context</th>
+					<th>CORS applies?</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Browser (any)</td>
+					<td>✅ Yes</td>
+			</tr>
+			<tr>
+					<td>Native Android/iOS HTTP</td>
+					<td>❌ No</td>
+			</tr>
+			<tr>
+					<td>WebView JavaScript</td>
+					<td>✅ Yes (within WebView)</td>
+			</tr>
+			<tr>
+					<td>Native code calling API</td>
+					<td>❌ No</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="security-implications">Security Implications</h2>
+<h3 id="for-developers">For Developers</h3>
+<p>Don&rsquo;t rely on CORS to protect your API from mobile clients. A mobile app — or anyone using curl, Postman, or any non-browser tool — will never be blocked by CORS.</p>
+<p>Real API protection requires:</p>
+<ul>
+<li><strong>Authentication</strong> (JWT, OAuth 2.0, API keys)</li>
+<li><strong>Authorisation</strong> (check what the authenticated user can do)</li>
+<li><strong>Rate limiting</strong></li>
+<li><strong>Input validation</strong></li>
+</ul>
+<h3 id="for-security-testers">For Security Testers</h3>
+<p>When testing a mobile app&rsquo;s API, CORS misconfigurations are largely irrelevant for the native app itself. However:</p>
+<ul>
+<li>If the same API is consumed by a web frontend, CORS misconfigs matter there</li>
+<li>WebViews with relaxed CORS settings (<code>setAllowUniversalAccessFromFileURLs</code>) are a real vulnerability</li>
+<li>Focus on auth bypasses, IDOR, and business logic flaws instead</li>
+</ul>
+<h2 id="common-interview-trap">Common Interview Trap</h2>
+<p><strong>Question:</strong> &ldquo;The mobile app calls <code>api.example.com</code>. The server has <code>Access-Control-Allow-Origin: *</code>. Is this a vulnerability?&rdquo;</p>
+<p><strong>Wrong answer:</strong> &ldquo;Yes, it allows cross-origin access.&rdquo;</p>
+<p><strong>Correct answer:</strong> &ldquo;For the mobile app itself, no — CORS doesn&rsquo;t apply to native HTTP clients. For a web frontend using the same API, <code>*</code> is overly permissive and could contribute to CSRF-like attacks if combined with credentialed requests. The risk context matters.&rdquo;</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>CORS is a <strong>browser enforcement mechanism</strong>, not a server or OS feature</li>
+<li>Native mobile apps bypass CORS completely because they don&rsquo;t use a browser engine</li>
+<li>WebViews inherit browser behaviour and are subject to CORS within their JavaScript context</li>
+<li>API security must rely on authentication and authorisation, not CORS</li>
+</ul>
+<hr>
+<p><em>Part of an ongoing series on security misconceptions in interviews and assessments.</em></p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/mobile-security">mobile-security</a><a class="tag" href="/tags/cors">cors</a><a class="tag" href="/tags/security">security</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-engineer-interview-questions-part-6/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:984/0*q8zdfXehtyNZL3CU.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">security</span>
+        <h3 class="related-card-title">Security Engineer Interview Questions Part-6</h3>
+        <span class="related-meta">Mar 8, 2025 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-engineer-interview-questions-part-5/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:984/0*wkARrwigupJwn0qB.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">security</span>
+        <h3 class="related-card-title">Security Engineer Interview Questions Part-5</h3>
+        <span class="related-meta">Oct 23, 2024 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-engineer-interview-questions-part-3/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/da:true/resize:fit:1200/0*4j21HcmDR1_SDy3Q" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">security</span>
+        <h3 class="related-card-title">Security Engineer Interview Questions Part-3</h3>
+        <span class="related-meta">Oct 9, 2024 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/agentsudo-tryhackme-walkthrough/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">AgentSudo Write-Up: TryHackMe Machine Walk-through</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/shodan-censys-subfinder-integration/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Integrating Shodan and Censys API Keys into Subfinder</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

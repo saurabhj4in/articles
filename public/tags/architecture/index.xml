@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Saurabh Jain</title>
+    <link>http://localhost:1313/</link>
+    <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <managingEditor>Saurabh Jain</managingEditor>
+    <atom:link href="http://localhost:1313/tags/architecture/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Security Engineer Interview Questions Part-2</title>
+      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-2/</link>
+      <pubDate>Fri, 27 Sep 2024 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-2/</guid>
+      <description>Part 2 of the series explains the differences between monolithic and microservice architectures from a security and scalability perspective.</description>
+    </item>
+    
+  </channel>
+</rss>

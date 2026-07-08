@@ -1,0 +1,25 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">{{ .Site.Title }}</span>
+        <p class="footer-bio">{{ .Site.Params.description }}</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="{{ .Site.Params.mediumURL }}" target="_blank" rel="noopener">Medium</a>
+        <a href="{{ .Site.Params.linkedinURL }}" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="{{ .Site.Params.githubURL }}" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© {{ now.Year }} {{ .Site.Params.author }} · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>

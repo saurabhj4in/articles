@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Nine foundational security principles that matter more than any tool or framework.">
+<meta name="author" content="Saurabh Jain">
+<title>Security Fundamentals for Beginners · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Security Fundamentals for Beginners">
+<meta property="og:description" content="Nine foundational security principles that matter more than any tool or framework.">
+<meta property="og:url"         content="http://localhost:1313/posts/security-fundamentals-for-beginners/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:1200/1*_lSj8t4cB6Nko0_3eyic6A.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:1200/1*_lSj8t4cB6Nko0_3eyic6A.png">
+
+
+<meta property="article:published_time" content="2025-09-11T00:00:00Z">
+<meta property="article:tag" content="Security"><meta property="article:tag" content="Beginners"><meta property="article:tag" content="Learning"><meta property="article:tag" content="Fundamentals">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Security Fundamentals for Beginners">
+<meta name="twitter:description" content="Nine foundational security principles that matter more than any tool or framework.">
+
+
+<link rel="canonical" href="https://saurabh-jain.medium.com/security-fundamentals-for-beginners-8a673e6bfe8b">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-least-privilege">1. Least Privilege</a></li>
+    <li><a href="#2-defense-in-depth">2. Defense in Depth</a></li>
+    <li><a href="#3-fail-secure">3. Fail Secure</a></li>
+    <li><a href="#4-separation-of-duties">4. Separation of Duties</a></li>
+    <li><a href="#5-security-by-design">5. Security by Design</a></li>
+    <li><a href="#6-open-design">6. Open Design</a></li>
+    <li><a href="#7-complete-mediation">7. Complete Mediation</a></li>
+    <li><a href="#8-psychological-acceptability">8. Psychological Acceptability</a></li>
+    <li><a href="#9-minimize-attack-surface">9. Minimize Attack Surface</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/security">Security</a><a class="tag" href="/tags/beginners">Beginners</a><a class="tag" href="/tags/learning">Learning</a><a class="tag" href="/tags/fundamentals">Fundamentals</a></div>
+        
+        <h1 class="post-title">Security Fundamentals for Beginners</h1>
+        <p class="post-subtitle">Nine foundational security principles that matter more than any tool or framework.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>September 11, 2025</time>
+              <span class="dot">·</span>
+              <span>3 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://saurabh-jain.medium.com/security-fundamentals-for-beginners-8a673e6bfe8b" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:1200/1*_lSj8t4cB6Nko0_3eyic6A.png" alt="Security Fundamentals for Beginners" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://saurabh-jain.medium.com/security-fundamentals-for-beginners-8a673e6bfe8b" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><blockquote>
+<p>This article was originally published on <a href="https://saurabh-jain.medium.com/security-fundamentals-for-beginners-8a673e6bfe8b">Medium</a>. Read the full version there.</p>
+</blockquote>
+<p>AI won&rsquo;t protect your systems if your foundational security practices are weak. In fact, weak fundamentals make AI-assisted mistakes amplify faster.</p>
+<p>Here are nine principles every engineer, startup founder, and security professional should understand before reaching for any tool.</p>
+<h2 id="1-least-privilege">1. Least Privilege</h2>
+<p><strong>Give users and systems only the access they need — nothing more.</strong></p>
+<p>Think of it like an apartment building: residents get a key to their unit, not to every door in the building.</p>
+<p>Applied to tech:</p>
+<ul>
+<li>An intern doesn&rsquo;t need full AWS production access</li>
+<li>A service account for reading logs doesn&rsquo;t need write permissions to the database</li>
+<li>A third-party integration doesn&rsquo;t need admin-level API tokens</li>
+</ul>
+<p>Excessive permissions are a force multiplier for mistakes and attacks. One compromised low-privilege account should not be able to take down the entire system.</p>
+<p><strong>In practice:</strong> Audit your IAM roles quarterly. Start from zero permissions and add only what&rsquo;s needed. Use tools like AWS IAM Access Analyzer to find overly permissive policies.</p>
+<h2 id="2-defense-in-depth">2. Defense in Depth</h2>
+<p><strong>Don&rsquo;t rely on a single control. Layer your defenses.</strong></p>
+<p>If your only security is a firewall and it gets bypassed, game over. Instead, assume every layer can fail and build accordingly:</p>
+<ul>
+<li>Firewall + WAF + authentication + authorization + audit logging</li>
+<li>Even if an attacker gets past your firewall, they still need credentials</li>
+<li>Even with credentials, their actions are logged and alerted on</li>
+</ul>
+<h2 id="3-fail-secure">3. Fail Secure</h2>
+<p><strong>When something breaks, it should fail into a safe state.</strong></p>
+<p>A door that jams open when the power goes out fails insecure. A door that jams locked fails secure.</p>
+<p>In software:</p>
+<ul>
+<li>An authorization check that throws an exception should default to <em>deny</em>, not <em>allow</em></li>
+<li>A network outage shouldn&rsquo;t disable your logging system</li>
+</ul>
+<h2 id="4-separation-of-duties">4. Separation of Duties</h2>
+<p><strong>No single person or system should have unchecked power over critical operations.</strong></p>
+<p>Examples:</p>
+<ul>
+<li>The developer who writes code shouldn&rsquo;t be the only one who can deploy it to production</li>
+<li>The person who approves vendor payments shouldn&rsquo;t also be the one who initiates them</li>
+<li>Database admins shouldn&rsquo;t have access to the audit logs that track their own actions</li>
+</ul>
+<h2 id="5-security-by-design">5. Security by Design</h2>
+<p><strong>Build security in from the start, not bolted on afterward.</strong></p>
+<p>Security added retroactively is always more expensive, less effective, and architecturally awkward. Consider threat models during design, not during the post-breach review.</p>
+<h2 id="6-open-design">6. Open Design</h2>
+<p><strong>Security shouldn&rsquo;t depend on keeping your implementation secret.</strong></p>
+<p>Also called Kerckhoffs&rsquo;s principle: a system should be secure even if everything about it except the key is public knowledge. This is why open-source cryptographic algorithms (AES, RSA) are trusted — they&rsquo;ve been scrutinized by thousands of researchers.</p>
+<p>&ldquo;Security through obscurity&rdquo; as your <em>only</em> control is not security.</p>
+<h2 id="7-complete-mediation">7. Complete Mediation</h2>
+<p><strong>Every access to every resource should be checked, every time.</strong></p>
+<p>Don&rsquo;t cache authorization decisions longer than necessary. Don&rsquo;t assume that because a user had permission at login, they still have it 8 hours later.</p>
+<h2 id="8-psychological-acceptability">8. Psychological Acceptability</h2>
+<p><strong>Security controls that are too hard to use will be bypassed.</strong></p>
+<p>If your VPN is so slow that developers disable it to work, you&rsquo;ve created a security theater. Good security design accounts for human behavior. Make the secure path the easy path.</p>
+<h2 id="9-minimize-attack-surface">9. Minimize Attack Surface</h2>
+<p><strong>Every feature, port, service, and API endpoint is a potential entry point.</strong></p>
+<ul>
+<li>Disable services you don&rsquo;t need</li>
+<li>Close ports that aren&rsquo;t in use</li>
+<li>Remove unused dependencies from your codebase</li>
+<li>Decommission old systems instead of leaving them running &ldquo;just in case&rdquo;</li>
+</ul>
+<p>The less there is, the less there is to attack.</p>
+<hr>
+<p>These aren&rsquo;t flashy. There&rsquo;s no ML model or zero-day research here. But every major breach you&rsquo;ve read about in the last decade violated at least one of these principles. Start here.</p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/security">Security</a><a class="tag" href="/tags/beginners">Beginners</a><a class="tag" href="/tags/learning">Learning</a><a class="tag" href="/tags/fundamentals">Fundamentals</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1072/1*OqaoatIVKME7GHoLVCC6dw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AWS</span>
+        <h3 class="related-card-title">Unauthenticated Access to AWS via Cognito Identity Pool ID</h3>
+        <span class="related-meta">May 5, 2026 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/the-day-google-stopped-helping-me-at-work/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:886/1*wTS0hn9JV8FhTnB_1UUnJA.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">Career</span>
+        <h3 class="related-card-title">The Day Google Stopped Helping Me at Work</h3>
+        <span class="related-meta">Jan 23, 2026 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*BbypzEZUlcOgPdyhBlfbaQ.jpeg" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AI</span>
+        <h3 class="related-card-title">Prompting Cheat Sheet for Security Engineers</h3>
+        <span class="related-meta">Aug 18, 2025 · 3 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/recon-to-responsible-disclosure/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Recon to Responsible Disclosure</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/python-tool-email-security-audits/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Built a Python Tool to Automate Email Security Audits</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

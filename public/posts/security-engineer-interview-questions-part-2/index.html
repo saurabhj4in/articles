@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Part 2 of the series explains the differences between monolithic and microservice architectures from a security and scalability perspective.">
+<meta name="author" content="Saurabh Jain">
+<title>Security Engineer Interview Questions Part-2 · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Security Engineer Interview Questions Part-2">
+<meta property="og:description" content="Part 2 of the series explains the differences between monolithic and microservice architectures from a security and scalability perspective.">
+<meta property="og:url"         content="http://localhost:1313/posts/security-engineer-interview-questions-part-2/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:1200/1*jVgNnRIVP2yJ9sx7S5OfnQ.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:1200/1*jVgNnRIVP2yJ9sx7S5OfnQ.png">
+
+
+<meta property="article:published_time" content="2024-09-27T00:00:00Z">
+<meta property="article:tag" content="security"><meta property="article:tag" content="interview"><meta property="article:tag" content="architecture">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Security Engineer Interview Questions Part-2">
+<meta name="twitter:description" content="Part 2 of the series explains the differences between monolithic and microservice architectures from a security and scalability perspective.">
+
+
+<link rel="canonical" href="https://saurabh-jain.medium.com/security-engineer-interview-questions-part-2-0bdd5fbf3a52">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#question-1-difference-between-microservice-architecture--monolithic-architecture">Question 1: Difference between Microservice Architecture &amp; Monolithic Architecture?</a>
+      <ul>
+        <li><a href="#monolithic-architecture">Monolithic Architecture</a></li>
+        <li><a href="#microservice-architecture">Microservice Architecture</a></li>
+        <li><a href="#security-trade-offs">Security Trade-offs</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/security">security</a><a class="tag" href="/tags/interview">interview</a><a class="tag" href="/tags/architecture">architecture</a></div>
+        
+        <h1 class="post-title">Security Engineer Interview Questions Part-2</h1>
+        <p class="post-subtitle">Part 2 of the series explains the differences between monolithic and microservice architectures from a security and scalability perspective.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>September 27, 2024</time>
+              <span class="dot">·</span>
+              <span>2 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://saurabh-jain.medium.com/security-engineer-interview-questions-part-2-0bdd5fbf3a52" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:1200/1*jVgNnRIVP2yJ9sx7S5OfnQ.png" alt="Security Engineer Interview Questions Part-2" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://saurabh-jain.medium.com/security-engineer-interview-questions-part-2-0bdd5fbf3a52" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><p>Welcome to Part-2 of Security Engineer Interview Questions.</p>
+<h2 id="question-1-difference-between-microservice-architecture--monolithic-architecture">Question 1: Difference between Microservice Architecture &amp; Monolithic Architecture?</h2>
+<h3 id="monolithic-architecture">Monolithic Architecture</h3>
+<p>The entire application is built as one large unit. All components (User Interface, Business Logic, Database and Web Servers) are combined into a single, unified system. The components are highly interdependent — changing one part can affect other parts. Any modification requires the whole system to be redeployed.</p>
+<p><strong>Advantages:</strong> Easy to develop and easy to deploy</p>
+<p><strong>Disadvantages:</strong> Hard to scale and tough to debug</p>
+<p><strong>Security implication:</strong> A single vulnerability can compromise the entire application. There is no isolation between components.</p>
+<h3 id="microservice-architecture">Microservice Architecture</h3>
+<p>The application is broken down into smaller, independent services handling specific functions (authentication, authorization, chat box, payment processing, etc.). Components are independent and communicate via APIs. Each microservice can be deployed, maintained, and scaled independently.</p>
+<p><strong>Advantages:</strong> Easy to scale, fault-tolerant and independent service deployment</p>
+<p><strong>Disadvantages:</strong> Complex and requires a sophisticated infrastructure</p>
+<p><strong>Security implication:</strong> Attack surface is more distributed. A compromised service can be isolated. But API communication introduces new vectors like MITM and IDOR if not properly secured.</p>
+<h3 id="security-trade-offs">Security Trade-offs</h3>
+<table>
+	<thead>
+			<tr>
+					<th>Factor</th>
+					<th>Monolithic</th>
+					<th>Microservices</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Blast radius</td>
+					<td>High — entire app</td>
+					<td>Contained to one service</td>
+			</tr>
+			<tr>
+					<td>Auth complexity</td>
+					<td>Simpler</td>
+					<td>Each service needs auth</td>
+			</tr>
+			<tr>
+					<td>Logging</td>
+					<td>Centralised</td>
+					<td>Distributed (requires aggregation)</td>
+			</tr>
+			<tr>
+					<td>Network exposure</td>
+					<td>Minimal</td>
+					<td>High (internal APIs)</td>
+			</tr>
+	</tbody>
+</table>
+<hr>
+<p><em>Part of a series on real security engineer interview questions from major tech companies.</em></p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/security">security</a><a class="tag" href="/tags/interview">interview</a><a class="tag" href="/tags/architecture">architecture</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-engineer-interview-questions-part-6/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:984/0*q8zdfXehtyNZL3CU.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">security</span>
+        <h3 class="related-card-title">Security Engineer Interview Questions Part-6</h3>
+        <span class="related-meta">Mar 8, 2025 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-engineer-interview-questions-part-5/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:984/0*wkARrwigupJwn0qB.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">security</span>
+        <h3 class="related-card-title">Security Engineer Interview Questions Part-5</h3>
+        <span class="related-meta">Oct 23, 2024 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-engineer-interview-questions-part-3/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/da:true/resize:fit:1200/0*4j21HcmDR1_SDy3Q" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">security</span>
+        <h3 class="related-card-title">Security Engineer Interview Questions Part-3</h3>
+        <span class="related-meta">Oct 9, 2024 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/security-engineer-interview-questions-part-1/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Security Engineer Interview Questions Part-1</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/security-engineer-interview-questions-part-3/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Security Engineer Interview Questions Part-3</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

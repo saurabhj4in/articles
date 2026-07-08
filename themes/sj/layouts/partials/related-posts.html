@@ -1,0 +1,41 @@
+{{ $current := . }}
+{{ $tags := .Params.tags }}
+{{ $related := where .Site.RegularPages "Type" "posts" }}
+{{ $related = where $related ".Permalink" "ne" $current.Permalink }}
+
+{{ $scored := slice }}
+{{ range $related }}
+  {{ $score := 0 }}
+  {{ range .Params.tags }}
+    {{ if in $tags . }}{{ $score = add $score 1 }}{{ end }}
+  {{ end }}
+  {{ if gt $score 0 }}
+    {{ $scored = $scored | append (dict "page" . "score" $score) }}
+  {{ end }}
+{{ end }}
+
+{{ $sorted := sort $scored "score" "desc" }}
+
+{{ if $sorted }}
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    {{ range first 3 $sorted }}
+    {{ with .page }}
+    <a class="related-card" href="{{ .Permalink }}">
+      {{ with .Params.cover }}
+      <img class="related-img" src="{{ . }}" alt="" loading="lazy">
+      {{ else }}
+      <div class="related-img-placeholder"></div>
+      {{ end }}
+      <div class="related-body">
+        {{ with .Params.tags }}<span class="tag">{{ index . 0 }}</span>{{ end }}
+        <h3 class="related-card-title">{{ .Title }}</h3>
+        <span class="related-meta">{{ .Date.Format "Jan 2, 2006" }} · {{ .ReadingTime }} min</span>
+      </div>
+    </a>
+    {{ end }}
+    {{ end }}
+  </div>
+</section>
+{{ end }}

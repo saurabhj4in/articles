@@ -1,0 +1,84 @@
+{{ define "main" }}
+{{ $pager := .Paginate .Pages }}
+<div class="container">
+  <section class="page-header">
+    {{ if eq .Kind "taxonomy" }}
+    <p class="page-label">Topic</p>
+    <h1 class="page-title">#{{ .Title }}</h1>
+    {{ else }}
+    <h1 class="page-title">{{ .Title }}</h1>
+    {{ end }}
+    <p class="page-count">{{ len .Pages }} post{{ if ne (len .Pages) 1 }}s{{ end }}</p>
+  </section>
+
+  <section class="card-grid">
+    {{ range $pager.Pages }}
+    <article class="card">
+      <a class="card-image-link" href="{{ .Permalink }}">
+        {{ with .Params.cover }}
+        <img class="card-image" src="{{ . }}" alt="" loading="lazy">
+        {{ else }}
+        <div class="card-image-placeholder"></div>
+        {{ end }}
+        {{ with .Params.tags }}<span class="card-badge">{{ index . 0 }}</span>{{ end }}
+      </a>
+      <div class="card-body">
+        <h2 class="card-title"><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+        {{ with .Description }}<p class="card-desc">{{ . }}</p>{{ end }}
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="card-date">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M1 6h14M5 1v2M11 1v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              {{ .Date.Format "Jan 2, 2006" }}
+            </span>
+            <span class="card-read">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              {{ .ReadingTime }} min
+            </span>
+          </div>
+          <a class="card-link" href="{{ .Permalink }}">Read
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>
+    {{ end }}
+  </section>
+
+  {{ if gt $pager.TotalPages 1 }}
+  <nav class="pagination">
+    {{ if $pager.HasPrev }}
+    <a class="pag-btn" href="{{ $pager.Prev.URL }}">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Previous
+    </a>
+    {{ else }}
+    <span class="pag-btn disabled">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Previous
+    </span>
+    {{ end }}
+    <div class="pag-pages">
+      {{ range $pager.Pagers }}
+      {{ if eq . $pager }}
+      <span class="pag-page active">{{ .PageNumber }}</span>
+      {{ else }}
+      <a class="pag-page" href="{{ .URL }}">{{ .PageNumber }}</a>
+      {{ end }}
+      {{ end }}
+    </div>
+    {{ if $pager.HasNext }}
+    <a class="pag-btn" href="{{ $pager.Next.URL }}">
+      Next
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    {{ else }}
+    <span class="pag-btn disabled">
+      Next
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    {{ end }}
+  </nav>
+  {{ end }}
+</div>
+{{ end }}

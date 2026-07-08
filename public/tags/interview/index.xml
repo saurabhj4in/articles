@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="/blog/rss.xsl"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Saurabh Jain</title>
+    <link>http://localhost:1313/</link>
+    <description>Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <managingEditor>Saurabh Jain</managingEditor>
+    <atom:link href="http://localhost:1313/tags/interview/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Security Engineer Interview Questions Part-6</title>
+      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-6/</link>
+      <pubDate>Sat, 08 Mar 2025 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-6/</guid>
+      <description>Part 6 of the series covering security engineer interview questions, including AWS IMDSv2 security enhancements and why CORS alone cannot prevent CSRF attacks.</description>
+    </item>
+    
+    <item>
+      <title>Security Engineer Interview Questions Part-5</title>
+      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-5/</link>
+      <pubDate>Wed, 23 Oct 2024 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-5/</guid>
+      <description>Part 5 of the series presents a vulnerable Java code snippet and walks through identifying multiple security flaws including SQL injection, hardcoded credentials, and missing input validation.</description>
+    </item>
+    
+    <item>
+      <title>Security Engineer Interview Questions Part-3</title>
+      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-3/</link>
+      <pubDate>Wed, 09 Oct 2024 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-3/</guid>
+      <description>Part 3 of the series covers AWS network architecture, specifically where to place a Load Balancer and S3 Bucket within public and private subnets for optimal security.</description>
+    </item>
+    
+    <item>
+      <title>Security Engineer Interview Questions Part-2</title>
+      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-2/</link>
+      <pubDate>Fri, 27 Sep 2024 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-2/</guid>
+      <description>Part 2 of the series explains the differences between monolithic and microservice architectures from a security and scalability perspective.</description>
+    </item>
+    
+    <item>
+      <title>Security Engineer Interview Questions Part-1</title>
+      <link>http://localhost:1313/posts/security-engineer-interview-questions-part-1/</link>
+      <pubDate>Tue, 17 Sep 2024 00:00:00 &#43;0000</pubDate>
+      <guid>http://localhost:1313/posts/security-engineer-interview-questions-part-1/</guid>
+      <description>Part 1 of a multi-part series sharing real security engineer interview questions from major tech companies, covering the correct sequencing of WAF, IPS, and IDS in a network architecture.</description>
+    </item>
+    
+  </channel>
+</rss>

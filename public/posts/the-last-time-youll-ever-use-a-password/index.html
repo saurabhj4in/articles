@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Passkeys are here. Here&#39;s what they are, how they work, and why passwords are finally dying.">
+<meta name="author" content="Saurabh Jain">
+<title>The Last Time You&#39;ll Ever Use a Password · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="The Last Time You&#39;ll Ever Use a Password">
+<meta property="og:description" content="Passkeys are here. Here&#39;s what they are, how they work, and why passwords are finally dying.">
+<meta property="og:url"         content="http://localhost:1313/posts/the-last-time-youll-ever-use-a-password/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:1200/1*K3kjSErsnIK2ubtn6DAwmQ.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:1200/1*K3kjSErsnIK2ubtn6DAwmQ.png">
+
+
+<meta property="article:published_time" content="2025-07-25T00:00:00Z">
+<meta property="article:tag" content="Authentication"><meta property="article:tag" content="Passkeys"><meta property="article:tag" content="Security"><meta property="article:tag" content="Identity">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="The Last Time You&#39;ll Ever Use a Password">
+<meta name="twitter:description" content="Passkeys are here. Here&#39;s what they are, how they work, and why passwords are finally dying.">
+
+
+<link rel="canonical" href="https://meetcyber.net/the-last-time-youll-ever-use-a-password-fd36ef314883">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-a-passkey">What Is a Passkey?</a></li>
+    <li><a href="#why-this-is-better-than-passwords">Why This Is Better Than Passwords</a></li>
+    <li><a href="#how-it-works-in-practice">How It Works in Practice</a>
+      <ul>
+        <li><a href="#creating-a-passkey">Creating a Passkey</a></li>
+        <li><a href="#logging-in">Logging In</a></li>
+      </ul>
+    </li>
+    <li><a href="#what-about-phishing">What About Phishing?</a></li>
+    <li><a href="#the-transition-period">The Transition Period</a></li>
+    <li><a href="#what-to-do-now">What to Do Now</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/authentication">Authentication</a><a class="tag" href="/tags/passkeys">Passkeys</a><a class="tag" href="/tags/security">Security</a><a class="tag" href="/tags/identity">Identity</a></div>
+        
+        <h1 class="post-title">The Last Time You&#39;ll Ever Use a Password</h1>
+        <p class="post-subtitle">Passkeys are here. Here&#39;s what they are, how they work, and why passwords are finally dying.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>July 25, 2025</time>
+              <span class="dot">·</span>
+              <span>3 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://meetcyber.net/the-last-time-youll-ever-use-a-password-fd36ef314883" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:1200/1*K3kjSErsnIK2ubtn6DAwmQ.png" alt="The Last Time You&#39;ll Ever Use a Password" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://meetcyber.net/the-last-time-youll-ever-use-a-password-fd36ef314883" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><blockquote>
+<p>This article was originally published on <a href="https://meetcyber.net/the-last-time-youll-ever-use-a-password-fd36ef314883">Medium</a>. Read the full version there.</p>
+</blockquote>
+<p>Passwords have one fundamental problem: humans choose them, and humans are bad at it.</p>
+<p><code>Password123</code>. <code>CompanyName2024!</code>. The name of your dog with an exclamation mark at the end. The same password you use for everything because remembering 40 unique ones is impossible.</p>
+<p>We&rsquo;ve known this for decades. We&rsquo;ve tried to fix it with password managers, MFA, complexity requirements, and regular rotation policies. These help. But the password itself is still the weak link.</p>
+<p>Passkeys are the first serious replacement.</p>
+<h2 id="what-is-a-passkey">What Is a Passkey?</h2>
+<p>A passkey is a cryptographic key pair that replaces your password entirely.</p>
+<ul>
+<li><strong>Private key</strong> — stored on your device (your phone, laptop, or a hardware key). Never leaves the device. Never transmitted to the website.</li>
+<li><strong>Public key</strong> — stored on the service&rsquo;s server. Even if they get breached, this key alone is useless to an attacker.</li>
+</ul>
+<p>When you log in, the website sends a challenge. Your device signs it with your private key. The website verifies the signature with the public key. You&rsquo;re in.</p>
+<p>No password ever touches the network.</p>
+<h2 id="why-this-is-better-than-passwords">Why This Is Better Than Passwords</h2>
+<table>
+	<thead>
+			<tr>
+					<th>Problem with Passwords</th>
+					<th>Passkeys</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>Reused across sites</td>
+					<td>Each site gets a unique key pair</td>
+			</tr>
+			<tr>
+					<td>Phishable</td>
+					<td>Can&rsquo;t be phished — keys are bound to the domain</td>
+			</tr>
+			<tr>
+					<td>Leaked in breaches</td>
+					<td>Server only has the public key, which is worthless alone</td>
+			</tr>
+			<tr>
+					<td>Forgettable</td>
+					<td>Synced via iCloud Keychain, Google Password Manager, or hardware key</td>
+			</tr>
+			<tr>
+					<td>Brute-forceable</td>
+					<td>Cryptographically impossible to brute force</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="how-it-works-in-practice">How It Works in Practice</h2>
+<h3 id="creating-a-passkey">Creating a Passkey</h3>
+<ol>
+<li>Visit a site that supports passkeys (Google, Apple, GitHub, etc.)</li>
+<li>Go to Security settings → &ldquo;Create a passkey&rdquo;</li>
+<li>Biometric prompt (Face ID, fingerprint, or device PIN)</li>
+<li>Done — a key pair is generated and stored</li>
+</ol>
+<h3 id="logging-in">Logging In</h3>
+<ol>
+<li>Visit the site</li>
+<li>Click &ldquo;Sign in with passkey&rdquo;</li>
+<li>Biometric prompt</li>
+<li>Done — no password entered, nothing phishable, nothing to steal from the server</li>
+</ol>
+<h2 id="what-about-phishing">What About Phishing?</h2>
+<p>Passkeys are the first authentication method that is <em>technically</em> phishing-resistant.</p>
+<p>Traditional passwords (and even TOTP codes) can be phished. An attacker builds <code>paypa1.com</code>, you think it&rsquo;s PayPal, you enter your credentials, they log in immediately.</p>
+<p>With passkeys, the private key is cryptographically bound to the exact domain (<code>paypal.com</code>). Even if you navigate to a perfect lookalike, your device will not authenticate to it. The protocol-level domain binding makes the attack impossible.</p>
+<h2 id="the-transition-period">The Transition Period</h2>
+<p>Passkeys won&rsquo;t replace passwords overnight. The main hurdles:</p>
+<ul>
+<li><strong>Cross-device recovery</strong> — if you lose your phone, how do you get back in? Cloud sync (iCloud Keychain, Google Password Manager) solves most of this, but it&rsquo;s new behavior for users.</li>
+<li><strong>Ecosystem fragmentation</strong> — Apple, Google, and Microsoft have all adopted the FIDO2 standard, but not every site supports it yet.</li>
+<li><strong>Enterprise adoption</strong> — corporate IT environments move slowly.</li>
+</ul>
+<p>The trajectory is clear, though. Every major platform now supports passkeys. Browser support is universal. The question is when, not if.</p>
+<h2 id="what-to-do-now">What to Do Now</h2>
+<ol>
+<li><strong>Enable passkeys wherever they&rsquo;re available</strong> — Google, Apple ID, GitHub, Microsoft all support them</li>
+<li><strong>Use a password manager in the meantime</strong> — 1Password, Bitwarden, or your platform&rsquo;s built-in manager</li>
+<li><strong>Enable TOTP-based MFA</strong> on accounts that don&rsquo;t support passkeys yet</li>
+</ol>
+<p>Passwords will stick around for years. But every passkey you set up today is one fewer password you&rsquo;ll ever need to remember, reset, or lose to a phishing attack.</p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/authentication">Authentication</a><a class="tag" href="/tags/passkeys">Passkeys</a><a class="tag" href="/tags/security">Security</a><a class="tag" href="/tags/identity">Identity</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1072/1*OqaoatIVKME7GHoLVCC6dw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AWS</span>
+        <h3 class="related-card-title">Unauthenticated Access to AWS via Cognito Identity Pool ID</h3>
+        <span class="related-meta">May 5, 2026 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/the-day-google-stopped-helping-me-at-work/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:886/1*wTS0hn9JV8FhTnB_1UUnJA.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">Career</span>
+        <h3 class="related-card-title">The Day Google Stopped Helping Me at Work</h3>
+        <span class="related-meta">Jan 23, 2026 · 2 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/security-fundamentals-for-beginners/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*_lSj8t4cB6Nko0_3eyic6A.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">Security</span>
+        <h3 class="related-card-title">Security Fundamentals for Beginners</h3>
+        <span class="related-meta">Sep 11, 2025 · 3 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/cracked-aws-cloud-practitioner-in-2-weeks/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Cracked AWS Cloud Practitioner in 2 Weeks</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/how-to-be-a-good-prompter/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">How to Be a Good Prompter</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>

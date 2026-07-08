@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="From rejected duplicates and out-of-scope reports to a methodical recon process that actually works.">
+<meta name="author" content="Saurabh Jain">
+<title>Recon to Responsible Disclosure · Saurabh Jain</title>
+
+
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Recon to Responsible Disclosure">
+<meta property="og:description" content="From rejected duplicates and out-of-scope reports to a methodical recon process that actually works.">
+<meta property="og:url"         content="http://localhost:1313/posts/recon-to-responsible-disclosure/">
+<meta property="og:site_name"   content="Saurabh Jain">
+
+<meta property="og:image"       content="https://miro.medium.com/v2/resize:fit:800/1*BEcWVBu_Zb-HGnDm01YM-w.png">
+<meta name="twitter:image"      content="https://miro.medium.com/v2/resize:fit:800/1*BEcWVBu_Zb-HGnDm01YM-w.png">
+
+
+<meta property="article:published_time" content="2025-09-01T00:00:00Z">
+<meta property="article:tag" content="Bug Bounty"><meta property="article:tag" content="Recon"><meta property="article:tag" content="Responsible Disclosure"><meta property="article:tag" content="Security Research">
+
+
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Recon to Responsible Disclosure">
+<meta name="twitter:description" content="From rejected duplicates and out-of-scope reports to a methodical recon process that actually works.">
+
+
+<link rel="canonical" href="https://saurabh-jain.medium.com/recon-to-responsible-disclosure-ee3d308a3b69">
+
+
+<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Saurabh Jain">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+<script>
+  (function(){
+    var t=localStorage.getItem('sj-theme')||
+      (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',t);
+  })();
+</script>
+
+
+</head>
+<body>
+  <div id="reading-progress"></div>
+  <header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="site-brand">
+      <span class="brand-name">Saurabh Jain</span>
+      <span class="brand-tagline">Security · Cloud · Bug Bounty</span>
+    </a>
+
+    <nav class="site-nav" id="nav-menu">
+      <a href="/about/">About</a>
+      <a href="/search/" class="nav-icon" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </nav>
+
+    <button class="nav-hamburger" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+  <main class="site-main">
+<div class="container">
+  <div class="post-layout has-toc">
+
+    
+    
+    <aside class="post-toc">
+      <div class="toc-sticky">
+        <p class="toc-label">Contents</p>
+        <nav class="toc-nav"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-bug-bounty-dream">The Bug Bounty Dream</a></li>
+    <li><a href="#why-most-beginners-fail-early">Why Most Beginners Fail Early</a></li>
+    <li><a href="#recon-mode-a-methodical-approach">Recon Mode: A Methodical Approach</a>
+      <ul>
+        <li><a href="#step-1-understand-the-scope">Step 1: Understand the Scope</a></li>
+        <li><a href="#step-2-asset-discovery">Step 2: Asset Discovery</a></li>
+        <li><a href="#step-3-fingerprinting">Step 3: Fingerprinting</a></li>
+        <li><a href="#step-4-finding-the-interesting-stuff">Step 4: Finding the Interesting Stuff</a></li>
+        <li><a href="#step-5-writing-a-good-report">Step 5: Writing a Good Report</a></li>
+        <li><a href="#step-6-responsible-disclosure">Step 6: Responsible Disclosure</a></li>
+      </ul>
+    </li>
+    <li><a href="#the-mindset-shift">The Mindset Shift</a></li>
+  </ul>
+</nav></nav>
+      </div>
+    </aside>
+    
+
+    
+    <article class="post-content">
+
+      
+      <header class="post-header">
+        
+        <div class="post-tags"><a class="tag" href="/tags/bug-bounty">Bug Bounty</a><a class="tag" href="/tags/recon">Recon</a><a class="tag" href="/tags/responsible-disclosure">Responsible Disclosure</a><a class="tag" href="/tags/security-research">Security Research</a></div>
+        
+        <h1 class="post-title">Recon to Responsible Disclosure</h1>
+        <p class="post-subtitle">From rejected duplicates and out-of-scope reports to a methodical recon process that actually works.</p>
+        <div class="post-byline">
+          <img class="byline-avatar" src="https://github.com/saurabhj4in.png" alt="Saurabh Jain" loading="lazy">
+          <div class="byline-info">
+            <span class="byline-author">Saurabh Jain</span>
+            <div class="byline-meta">
+              <time>September 1, 2025</time>
+              <span class="dot">·</span>
+              <span>3 min read</span>
+              
+              <span class="dot">·</span>
+              <a href="https://saurabh-jain.medium.com/recon-to-responsible-disclosure-ee3d308a3b69" target="_blank" rel="noopener">View on Medium ↗</a>
+              
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+      <img class="post-cover-img" src="https://miro.medium.com/v2/resize:fit:800/1*BEcWVBu_Zb-HGnDm01YM-w.png" alt="Recon to Responsible Disclosure" loading="eager">
+      
+
+      
+      
+<div class="medium-banner">
+  <svg width="20" height="20" viewBox="0 0 195 195" fill="currentColor"><ellipse cx="55" cy="97.5" rx="55" ry="55"/><ellipse cx="149.5" cy="97.5" rx="29.5" ry="52"/><ellipse cx="186.5" cy="97.5" rx="8.5" ry="45"/></svg>
+  <span>Originally published on Medium — <a href="https://saurabh-jain.medium.com/recon-to-responsible-disclosure-ee3d308a3b69" target="_blank" rel="noopener">read there for comments &amp; claps →</a></span>
+</div>
+
+
+
+      
+      <div class="post-body"><blockquote>
+<p>This article was originally published on <a href="https://saurabh-jain.medium.com/recon-to-responsible-disclosure-ee3d308a3b69">Medium</a>. Read the full version there.</p>
+</blockquote>
+<h2 id="the-bug-bounty-dream">The Bug Bounty Dream</h2>
+<p>Every security engineer&rsquo;s side quest: find a critical vulnerability, write a sharp report, collect a payout, repeat.</p>
+<p>The reality of the first few months:</p>
+<ul>
+<li><strong>Duplicate</strong> — someone found it before you</li>
+<li><strong>Out of scope</strong> — you tested the wrong asset</li>
+<li><strong>Not applicable</strong> — the issue you found isn&rsquo;t considered a vulnerability on this program</li>
+<li><strong>Spam</strong> — you moved too fast and your report was vague</li>
+</ul>
+<p>Zero triaged bugs. Confidence in the floor.</p>
+<h2 id="why-most-beginners-fail-early">Why Most Beginners Fail Early</h2>
+<p>The mistake isn&rsquo;t technical — it&rsquo;s process. Most beginners jump straight to exploitation before understanding the target. They test the obvious login page, get nothing, move on. That&rsquo;s not bug hunting; that&rsquo;s hoping.</p>
+<p>Real bug bounty work is 70% recon, 20% analysis, 10% exploitation and reporting.</p>
+<h2 id="recon-mode-a-methodical-approach">Recon Mode: A Methodical Approach</h2>
+<h3 id="step-1-understand-the-scope">Step 1: Understand the Scope</h3>
+<p>Before touching anything, read the program&rsquo;s scope document carefully.</p>
+<ul>
+<li>What domains are in scope?</li>
+<li>What vulnerability types are accepted?</li>
+<li>What&rsquo;s explicitly excluded (e.g., rate limiting, self-XSS, social engineering)?</li>
+</ul>
+<p>Wasted effort on out-of-scope assets is the most common beginner mistake.</p>
+<h3 id="step-2-asset-discovery">Step 2: Asset Discovery</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Enumerate subdomains</span>
+</span></span><span class="line"><span class="cl">subfinder -d target.com -o subdomains.txt
+</span></span><span class="line"><span class="cl">amass enum -d target.com &gt;&gt; subdomains.txt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Probe for live hosts</span>
+</span></span><span class="line"><span class="cl">cat subdomains.txt <span class="p">|</span> httpx -silent -status-code -title -o live.txt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Find interesting endpoints</span>
+</span></span><span class="line"><span class="cl">cat live.txt <span class="p">|</span> waybackurls <span class="p">|</span> grep -E <span class="s2">&#34;\.(json|xml|env|config|bak)&#34;</span>
+</span></span></code></pre></div><h3 id="step-3-fingerprinting">Step 3: Fingerprinting</h3>
+<p>Understand the tech stack before looking for vulnerabilities.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Technology fingerprinting</span>
+</span></span><span class="line"><span class="cl">whatweb https://target.com
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Check response headers for server info</span>
+</span></span><span class="line"><span class="cl">curl -I https://target.com
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># JavaScript analysis</span>
+</span></span><span class="line"><span class="cl">cat *.js <span class="p">|</span> grep -E <span class="s2">&#34;api[_-]?key|token|secret|password|endpoint&#34;</span>
+</span></span></code></pre></div><h3 id="step-4-finding-the-interesting-stuff">Step 4: Finding the Interesting Stuff</h3>
+<p>Look for:</p>
+<ul>
+<li><strong>Forgotten subdomains</strong> — <code>dev.target.com</code>, <code>staging.target.com</code>, <code>admin-old.target.com</code></li>
+<li><strong>Exposed admin panels</strong> — these often have weaker auth</li>
+<li><strong>API endpoints not linked in the UI</strong> — check JS files and browser network logs</li>
+<li><strong>Parameter pollution</strong> — try adding unexpected parameters to known endpoints</li>
+</ul>
+<h3 id="step-5-writing-a-good-report">Step 5: Writing a Good Report</h3>
+<p>A good report is half the battle. Include:</p>
+<ol>
+<li><strong>Title</strong> — one sentence, specific (e.g., &ldquo;Stored XSS in profile bio field allows session hijacking&rdquo;)</li>
+<li><strong>Severity</strong> — with justification (CVSS score helps)</li>
+<li><strong>Steps to reproduce</strong> — numbered, precise, reproducible by someone who has never used your setup</li>
+<li><strong>Impact</strong> — what can an attacker actually do?</li>
+<li><strong>Proof of concept</strong> — screenshot, video, or curl command</li>
+<li><strong>Suggested fix</strong> — optional but appreciated</li>
+</ol>
+<h3 id="step-6-responsible-disclosure">Step 6: Responsible Disclosure</h3>
+<ul>
+<li>Report to the program&rsquo;s official channel only</li>
+<li>Don&rsquo;t share the vulnerability publicly until it&rsquo;s fixed</li>
+<li>Give the team reasonable time to respond (most programs SLA 90 days)</li>
+<li>Follow up once if you don&rsquo;t hear back in 2 weeks</li>
+</ul>
+<h2 id="the-mindset-shift">The Mindset Shift</h2>
+<p>Bug bounty isn&rsquo;t a slot machine. It rewards systematic thinking, patience, and good reporting over luck and speed.</p>
+<p>The hunters who consistently find issues aren&rsquo;t smarter — they&rsquo;re more methodical. They build recon pipelines, keep notes, and understand their targets deeply before they start probing.</p>
+<p>Start with recon. The bugs will follow.</p>
+</div>
+
+      <hr class="post-divider">
+
+      
+      
+      <div class="post-tags-footer">
+        <span class="tags-label">Topics:</span>
+        <a class="tag" href="/tags/bug-bounty">Bug Bounty</a><a class="tag" href="/tags/recon">Recon</a><a class="tag" href="/tags/responsible-disclosure">Responsible Disclosure</a><a class="tag" href="/tags/security-research">Security Research</a>
+      </div>
+      
+
+      
+      
+
+
+
+
+
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+  
+
+
+
+
+
+<section class="related-section">
+  <h2 class="related-title">You might also like</h2>
+  <div class="related-grid">
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/20-vulnerabilities-in-a-static-website/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1200/1*jJ5-6zmfCDldKx5g1gj-Jg.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">Bug Bounty</span>
+        <h3 class="related-card-title">20&#43; Vulnerabilities in a Static Website</h3>
+        <span class="related-meta">Nov 18, 2025 · 3 min</span>
+      </div>
+    </a>
+    
+    
+    
+    <a class="related-card" href="http://localhost:1313/posts/cognito-identity-pool-unauthenticated-access/">
+      
+      <img class="related-img" src="https://miro.medium.com/v2/resize:fit:1072/1*OqaoatIVKME7GHoLVCC6dw.png" alt="" loading="lazy">
+      
+      <div class="related-body">
+        <span class="tag">AWS</span>
+        <h3 class="related-card-title">Unauthenticated Access to AWS via Cognito Identity Pool ID</h3>
+        <span class="related-meta">May 5, 2026 · 2 min</span>
+      </div>
+    </a>
+    
+    
+  </div>
+</section>
+
+
+
+      
+      
+<section class="comments-section comments-disabled">
+  <div class="comments-placeholder">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <p>Comments coming soon via Giscus.</p>
+    <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Discuss this on Medium →</a>
+  </div>
+</section>
+
+
+
+      
+      <nav class="post-nav">
+        
+        <a class="post-nav-link prev" href="http://localhost:1313/posts/prompting-cheat-sheet-security-engineers/">
+          <span class="nav-label">← Previous</span>
+          <span class="nav-title">Prompting Cheat Sheet for Security Engineers</span>
+        </a>
+        
+        
+        <a class="post-nav-link next" href="http://localhost:1313/posts/security-fundamentals-for-beginners/">
+          <span class="nav-label">Next →</span>
+          <span class="nav-title">Security Fundamentals for Beginners</span>
+        </a>
+        
+      </nav>
+
+      <div class="back-link"><a href="/">← All posts</a></div>
+
+    </article>
+  </div>
+</div>
+<script src="/js/main.js" defer></script>
+
+  </main>
+  <footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-name">Saurabh Jain</span>
+        <p class="footer-bio">Security engineer writing about cloud security, bug bounties, AWS, and the grey areas no one puts on a slide deck.</p>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Writing</p>
+        <a href="/posts/">All Posts</a>
+        <a href="/tags/">Topics</a>
+        <a href="/index.xml">RSS Feed</a>
+      </div>
+      <div class="footer-links-group">
+        <p class="footer-group-title">Connect</p>
+        <a href="https://saurabh-jain.medium.com/" target="_blank" rel="noopener">Medium</a>
+        <a href="https://www.linkedin.com/in/saurabh-jain-503991165/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/saurabhj4in" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Saurabh Jain · Built with Hugo · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+  <script src="/js/main.js"></script>
+  
+  
+</body>
+</html>
